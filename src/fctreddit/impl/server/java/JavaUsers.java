@@ -77,20 +77,75 @@ public class JavaUsers implements Users {
 
 	@Override
 	public Result<User> updateUser(String userId, String password, User user) {
-		// TODO Auto-generated method stub
-		return null;
+	Log.info("updateUser : user = " + userId + "; pwd = " + password);
+
+		// Check if user is valid
+		if (userId == null || password == null) {
+			Log.info("UserId or password null.");
+			return Result.error(ErrorCode.BAD_REQUEST);
+		}
+		try{
+			User u = hibernate.get(User.class, userId);
+			if(u == null) {
+				Log.info("User does not exist.");
+				return Result.error(ErrorCode.NOT_FOUND);
+			}
+
+			if (!password.equals(u.getPassword())) {
+				Log.info("Password is incorrect");
+				return Result.error(ErrorCode.FORBIDDEN);
+			}
+
+			hibernate.update(user);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return Result.error(ErrorCode.INTERNAL_ERROR);
+		}
+
+	return Result.ok(user);
 	}
 
 	@Override
 	public Result<User> deleteUser(String userId, String password) {
-		// TODO Auto-generated method stub
-		return null;
+		Log.info("deleteUser : user = " + userId + "; pwd = " + password);
+		// Check if user is valid
+		if (userId == null || password == null) {
+			Log.info("UserId or password null.");
+			return Result.error(ErrorCode.BAD_REQUEST);
+		}
+		User u;
+		try{
+			u = hibernate.get(User.class, userId);
+			if(u == null) {
+				Log.info("User does not exist.");
+				return Result.error(ErrorCode.NOT_FOUND);
+			}
+
+			if (!password.equals(u.getPassword())) {
+				Log.info("Password is incorrect");
+				return Result.error(ErrorCode.FORBIDDEN);
+			}
+
+			hibernate.delete(userId);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return Result.error(ErrorCode.INTERNAL_ERROR);
+		}
+		return Result.ok(u);
 	}
+
 
 	@Override
 	public Result<List<User>> searchUsers(String pattern) {
-		// TODO Auto-generated method stub
-		return null;
+		Log.info("searchUsers : pattern = " + pattern);
+		List<User> users = null;
+		try{
+			users = hibernate.jpql("SELECT u FROM User u WHERE u.userId LIKE '%" + pattern +"%'", User.class);
+		}catch(Exception e){
+			e.printStackTrace();
+			return Result.error(ErrorCode.INTERNAL_ERROR);
+		}
+		return Result.ok(users);
 	}
 
 }

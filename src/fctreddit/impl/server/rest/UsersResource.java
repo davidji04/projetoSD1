@@ -13,7 +13,7 @@ import fctreddit.impl.server.java.JavaUsers;
 
 public class UsersResource implements RestUsers {
 
-	private static Logger Log = Logger.getLogger(UsersResource.class.getName());
+	private static final Logger Log = Logger.getLogger(UsersResource.class.getName());
 
 	final Users impl;
 	
@@ -46,15 +46,21 @@ public class UsersResource implements RestUsers {
 	@Override
 	public User updateUser(String userId, String password, User user) {
 		Log.info("updateUser : user = " + userId + "; pwd = " + password + " ; userData = " + user);
-		// TODO: Complete method
-		throw new WebApplicationException(Status.NOT_IMPLEMENTED);
+		Result<User> res = impl.updateUser(userId, password, user);
+		if(!res.isOK()) {
+			throw new WebApplicationException(errorCodeToStatus(res.error()));
+		}
+		return res.value();
 	}
 
 	@Override
 	public User deleteUser(String userId, String password) {
 		Log.info("deleteUser : user = " + userId + "; pwd = " + password);
-		// TODO: Complete method
-		throw new WebApplicationException(Status.NOT_IMPLEMENTED);
+		Result<User> res = impl.deleteUser(userId, password);
+		if(!res.isOK()) {
+			throw new WebApplicationException(errorCodeToStatus(res.error()));
+		}
+		return res.value();
 	}
 
 	@Override
