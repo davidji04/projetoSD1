@@ -1,5 +1,6 @@
 package fctreddit.clients;
 
+import fctreddit.Discovery;
 import fctreddit.api.User;
 import fctreddit.api.java.Result;
 import fctreddit.clients.grpc.GrpcUsersClient;
@@ -20,17 +21,20 @@ public class DeleteUserClient {
             System.err.println( "Use: java " + DeleteUserClient.class.getCanonicalName() + " url userId password");
             return;
         }
+        Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);
+        discovery.start();
+        URI[] uris = discovery.knownUrisOf("UsersService",1);
 
-        String serverUrl = args[0];
+        URI serverUrl = uris[0];
         String userId = args[1];
         String password = args[2];
 
         UsersClient client = null;
 
-        if(serverUrl.endsWith("rest"))
-            client = new RestUsersClient( URI.create( serverUrl ) );
+        if(serverUrl.toString().endsWith("rest"))
+            client = new RestUsersClient(  serverUrl  );
         else
-            client = new GrpcUsersClient( URI.create( serverUrl) );
+            client = new GrpcUsersClient( serverUrl);
 
         Result<User> result = client.deleteUser(userId, password);
         if( result.isOK()  )

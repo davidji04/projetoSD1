@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Logger;
 
+import fctreddit.Discovery;
 import fctreddit.api.User;
 import fctreddit.api.java.Result;
 import fctreddit.clients.java.UsersClient;
@@ -13,15 +14,18 @@ import fctreddit.clients.grpc.GrpcUsersClient;
 public class CreateUserClient {
 
 	private static Logger Log = Logger.getLogger(CreateUserClient.class.getName());
-	
+
+
 	public static void main(String[] args) throws IOException {
-		
+
 		if( args.length != 5) {
 			System.err.println( "Use: java " + CreateUserClient.class.getCanonicalName() + " url userId fullName email password");
 			return;
 		}
-		
-		String serverUrl = args[0];
+		Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);
+		discovery.start();
+		URI[] uris = discovery.knownUrisOf("UsersService",1);
+		URI serverUrl = uris[0];
 		String userId = args[1];
 		String fullName = args[2];
 		String email = args[3];
@@ -31,10 +35,10 @@ public class CreateUserClient {
 		
 		UsersClient client = null;
 		
-		if(serverUrl.endsWith("rest"))
-			client = new RestUsersClient( URI.create( serverUrl ) );
+		if(serverUrl.toString().endsWith("rest"))
+			client = new RestUsersClient( serverUrl  );
 		else
-			client = new GrpcUsersClient( URI.create( serverUrl) );
+			client = new GrpcUsersClient( serverUrl );
 		
 		Result<String> result = client.createUser( usr );
 		if( result.isOK()  )
