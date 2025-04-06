@@ -1,9 +1,10 @@
-package fctreddit.impl.server.java.rest;
+package fctreddit.impl.server.rest;
 
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.logging.Logger;
 
+import fctreddit.impl.server.rest.UsersResource;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 

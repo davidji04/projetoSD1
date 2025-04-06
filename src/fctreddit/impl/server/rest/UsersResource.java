@@ -1,4 +1,4 @@
-package fctreddit.impl.server.java.rest;
+package fctreddit.impl.server.rest;
 
 import java.util.List;
 import java.util.logging.Logger;

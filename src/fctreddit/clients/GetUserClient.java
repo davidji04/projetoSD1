@@ -18,7 +18,7 @@ public class GetUserClient {
 	public static void main(String[] args) throws IOException {
 		
 		if( args.length != 3) {
-			System.err.println( "Use: java " + CreateUserClient.class.getCanonicalName() + " url userId password");
+			System.err.println( "Use: java " + GetUserClient.class.getCanonicalName() + " url userId password");
 			return;
 		}
 		
