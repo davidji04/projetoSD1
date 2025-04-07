@@ -24,7 +24,7 @@ public class UpdateUserClient {
         }
         Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);
         discovery.start();
-        URI[] uris = discovery.knownUrisOf("UsersService",1);
+        URI[] uris = discovery.knownUrisOf("Users",1);
 
 
         URI serverUrl = uris[0];
