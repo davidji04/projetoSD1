@@ -20,8 +20,8 @@ public class GetUserClient {
 
 
 
-		if( args.length != 3) {
-			System.err.println( "Use: java " + GetUserClient.class.getCanonicalName() + " url userId password");
+		if( args.length != 2) {
+			System.err.println( "Use: java " + GetUserClient.class.getCanonicalName() + " userId password");
 			return;
 		}
 		Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);

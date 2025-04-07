@@ -18,8 +18,8 @@ public class UpdateUserClient {
 
     public static void main(String[] args) throws IOException {
 
-        if( args.length != 6) {
-            System.err.println( "Use: java " + UpdateUserClient.class.getCanonicalName() + " url userId oldpwd fullName email password");
+        if( args.length != 5) {
+            System.err.println( "Use: java " + UpdateUserClient.class.getCanonicalName() + " userId oldpwd fullName email password");
             return;
         }
         Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);

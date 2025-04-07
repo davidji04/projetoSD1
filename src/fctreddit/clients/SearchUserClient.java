@@ -18,7 +18,7 @@ public class SearchUserClient {
     public static void main(String[] args) throws IOException {
 
 
-        if( args.length != 6) {
+        if( args.length != 1) {
             System.err.println( "Use: java " + SearchUserClient.class.getCanonicalName() + " query");
             return;
         }

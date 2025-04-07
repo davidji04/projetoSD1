@@ -17,8 +17,8 @@ public class DeleteUserClient {
 
     public static void main(String[] args) throws IOException {
 
-        if( args.length != 3) {
-            System.err.println( "Use: java " + DeleteUserClient.class.getCanonicalName() + " url userId password");
+        if( args.length != 2) {
+            System.err.println( "Use: java " + DeleteUserClient.class.getCanonicalName() + "userId password");
             return;
         }
         Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);
