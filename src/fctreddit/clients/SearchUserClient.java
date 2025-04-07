@@ -28,7 +28,7 @@ public class SearchUserClient {
         URI[] uris = discovery.knownUrisOf("Users",1);
 
         URI serverUrl = uris[0];
-        String query = args[1];
+        String query = args[0];
 
 
         UsersClient client = null;

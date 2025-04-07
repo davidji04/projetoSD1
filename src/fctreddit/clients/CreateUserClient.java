@@ -18,18 +18,20 @@ public class CreateUserClient {
 
 	public static void main(String[] args) throws IOException {
 
-		if( args.length != 4) {
-			System.err.println( "Use: java " + CreateUserClient.class.getCanonicalName() + "userId fullName email password");
+		if( args.length != 5) {
+			System.err.println( "Use: java " + CreateUserClient.class.getCanonicalName() + " userId fullName email password");
 			return;
 		}
 		Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);
 		discovery.start();
+
 		URI[] uris = discovery.knownUrisOf("Users",1);
+		Log.info("Discovered " + uris[0]);
 		URI serverUrl = uris[0];
-		String userId = args[1];
-		String fullName = args[2];
-		String email = args[3];
-		String password = args[4];
+		String userId = args[0];
+		String fullName = args[1];
+		String email = args[2];
+		String password = args[3];
 		
 		User usr = new User( userId, fullName, email, password);
 		

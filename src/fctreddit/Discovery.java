@@ -127,9 +127,8 @@ public class Discovery {
 					String msg = new String(pkt.getData(), 0, pkt.getLength());
 					String[] msgElems = msg.split(DELIMITER);
 					if (msgElems.length == 2) { // periodic announcement
-						System.out.println(msgElems[0]);
-						System.out.printf("FROM %s (%s) : %s\n", pkt.getAddress().getHostName(),
-								pkt.getAddress().getHostAddress(), msg);
+						//System.out.println(msgElems[0]);
+						//System.out.printf("FROM %s (%s) : %s\n", pkt.getAddress().getHostName(), pkt.getAddress().getHostAddress(), msg);
 						discoveredUris.add(URI.create(msgElems[0]));
 					}
 				} catch (IOException e) {
@@ -166,11 +165,12 @@ public class Discovery {
 
 		return result.toArray(new URI[0]);
 	}
-
+	/*
 	// Main just for testing purposes
 	public static void main(String[] args) throws Exception {
 		Discovery discovery = new Discovery(DISCOVERY_ADDR, "test",
 				"http://" + InetAddress.getLocalHost().getHostAddress());
 		discovery.start();
 	}
+	 */
 }

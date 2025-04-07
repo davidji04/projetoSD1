@@ -26,8 +26,8 @@ public class DeleteUserClient {
         URI[] uris = discovery.knownUrisOf("Users",1);
 
         URI serverUrl = uris[0];
-        String userId = args[1];
-        String password = args[2];
+        String userId = args[0];
+        String password = args[1];
 
         UsersClient client = null;
 
