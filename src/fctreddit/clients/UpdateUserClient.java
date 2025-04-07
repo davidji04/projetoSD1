@@ -45,10 +45,11 @@ public class UpdateUserClient {
 
         Result<User> result = client.updateUser(userId,oldpwd,usr);
         if( result.isOK()  )
-            Log.info("Updated user:" + result.value() );
+            Log.info("Updated user:" + result.value() + "\n");
         else
-            Log.info("Updated user failed with error: " + result.error());
+            Log.info("Updated user failed with error: " + result.error()+ "\n");
 
+        discovery.stop();
     }
 }
 

@@ -41,10 +41,11 @@ public class GetUserClient {
 			
 		Result<User> result = client.getUser(userId, password);
 		if( result.isOK()  )
-			Log.info("Get user:" + result.value() );
+			Log.info("Get user:" + result.value() + "\n");
 		else
-			Log.info("Get user failed with error: " + result.error());
-		
+			Log.info("Get user failed with error: " + result.error()+ "\n");
+
+		discovery.stop();
 	}
 	
 }

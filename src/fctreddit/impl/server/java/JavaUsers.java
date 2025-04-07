@@ -126,7 +126,7 @@ public class JavaUsers implements Users {
 				return Result.error(ErrorCode.FORBIDDEN);
 			}
 
-			hibernate.delete(userId);
+			hibernate.delete(u);
 		}catch(Exception e) {
 			e.printStackTrace();
 			return Result.error(ErrorCode.INTERNAL_ERROR);

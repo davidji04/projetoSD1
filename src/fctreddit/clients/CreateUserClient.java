@@ -18,7 +18,7 @@ public class CreateUserClient {
 
 	public static void main(String[] args) throws IOException {
 
-		if( args.length != 5) {
+		if( args.length != 4) {
 			System.err.println( "Use: java " + CreateUserClient.class.getCanonicalName() + " userId fullName email password");
 			return;
 		}
@@ -26,7 +26,7 @@ public class CreateUserClient {
 		discovery.start();
 
 		URI[] uris = discovery.knownUrisOf("Users",1);
-		Log.info("Discovered " + uris[0]);
+
 		URI serverUrl = uris[0];
 		String userId = args[0];
 		String fullName = args[1];
@@ -34,7 +34,7 @@ public class CreateUserClient {
 		String password = args[3];
 		
 		User usr = new User( userId, fullName, email, password);
-		
+		System.out.println(serverUrl.toString());
 		UsersClient client = null;
 		
 		if(serverUrl.toString().endsWith("rest"))
@@ -44,10 +44,11 @@ public class CreateUserClient {
 		
 		Result<String> result = client.createUser( usr );
 		if( result.isOK()  )
-			Log.info("Created user:" + result.value() );
+			Log.info("Created user:" + result.value() + "\n" );
 		else
-			Log.info("Create user failed with error: " + result.error());
+			Log.info("Create user failed with error: " + result.error() + "\n");
 
+		discovery.stop();
 	}
 	
 }

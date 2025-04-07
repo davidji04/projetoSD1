@@ -1,5 +1,7 @@
 package fctreddit;
 
+import org.glassfish.jersey.server.Uri;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -11,6 +13,8 @@ import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
@@ -57,8 +61,8 @@ public class Discovery {
 	private final String serviceName;
 	private final String serviceURI;
 	private final MulticastSocket ms;
-
-	private final List<URI> discoveredUris;
+	private boolean running;
+	private final Map<String, List<URI>> discoveredUris;
 	/**
 	 * @param serviceName the name of the service to announce
 	 * @param serviceURI  an uri string - representing the contact endpoint of the
@@ -71,7 +75,8 @@ public class Discovery {
 		this.addr = addr;
 		this.serviceName = serviceName;
 		this.serviceURI = serviceURI;
-		this.discoveredUris = new ArrayList<>();
+		this.running = true;
+		this.discoveredUris = new ConcurrentHashMap<String, List<URI>>();
 		if (this.addr == null) {
 			throw new RuntimeException("A multinet address has to be provided.");
 		} 
@@ -102,7 +107,7 @@ public class Discovery {
 			try {
 				// start thread to send periodic announcements
 				new Thread(() -> {
-					for (;;) {
+					while(running) {
 						try {
 							ms.send(announcePkt);
 							Thread.sleep(DISCOVERY_ANNOUNCE_PERIOD);
@@ -120,7 +125,7 @@ public class Discovery {
 		// start thread to collect announcements received from the network.
 		new Thread(() -> {
 			DatagramPacket pkt = new DatagramPacket(new byte[MAX_DATAGRAM_SIZE], MAX_DATAGRAM_SIZE);
-			for (;;) {
+			while (running) {
 				try {
 					pkt.setLength(MAX_DATAGRAM_SIZE);
 					ms.receive(pkt);
@@ -129,7 +134,9 @@ public class Discovery {
 					if (msgElems.length == 2) { // periodic announcement
 						//System.out.println(msgElems[0]);
 						//System.out.printf("FROM %s (%s) : %s\n", pkt.getAddress().getHostName(), pkt.getAddress().getHostAddress(), msg);
-						discoveredUris.add(URI.create(msgElems[0]));
+						String name = msgElems[0];
+						URI uri = URI.create(msgElems[1]);
+						discoveredUris.computeIfAbsent(name, key -> new ArrayList<>()).add(uri);
 					}
 				} catch (IOException e) {
 					// do nothing
@@ -137,6 +144,16 @@ public class Discovery {
 			}
 		}).start();
 	}
+
+	public void stop() {
+		this.running = false;
+		try{
+			ms.leaveGroup(addr,NetworkInterface.getByInetAddress(InetAddress.getLocalHost()));
+			ms.close();
+		} catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 	/**
 	 * Returns the known services.
@@ -148,13 +165,11 @@ public class Discovery {
 	 * 
 	 */
 	public URI[] knownUrisOf(String serviceName, int minReplies) {
-		List<URI> result = new ArrayList<>(MAX_SIZE);
-			while (result.size() < minReplies) {
-				for(URI uri : discoveredUris) {
-					if(uri.toString().contains(serviceName))
-						result.add(uri);
+		List<URI> result = new ArrayList<>();
+			while (true) {
+				result = discoveredUris.get(serviceName);
+				if ( result!=null && result.size() >= minReplies) break;
 
-				}
 				try {
 					Thread.sleep(DISCOVERY_RETRY_TIMEOUT);
 				} catch (InterruptedException e) {

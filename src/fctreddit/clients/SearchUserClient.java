@@ -41,11 +41,12 @@ public class SearchUserClient {
         Result<List<User>> result = client.searchUsers(query);
         if( result.isOK()  ){
             for( User u : result.value() ){
-                Log.info( u.toString() );
+                Log.info( u.toString()+ "\n" );
             }
         }
         else
-            Log.info("Search users failed with error: " + result.error());
+            Log.info("Search users failed with error: " + result.error()+ "\n");
 
+        discovery.stop();
     }
 }

@@ -109,7 +109,7 @@ public class RestUsersClient extends UsersClient {
 	public Result<User> updateUser(String userId, String password, User user) {
 		for (int i = 0; i < MAX_RETRIES ; i++) {
 			try{
-				Response r = target.path(userId).queryParam(RestUsers.QUERY, password)
+				Response r = target.path(userId).queryParam(RestUsers.PASSWORD, password)
 						.request().accept(MediaType.APPLICATION_JSON)
 						.put(Entity.entity(user, MediaType.APPLICATION_JSON));
 				int status = r.getStatus();
@@ -135,8 +135,8 @@ public class RestUsersClient extends UsersClient {
 	public Result<User> deleteUser(String userId, String password) {
 		for (int i = 0; i < MAX_RETRIES ; i++) {
 			try{
-				Response r =  target.path(userId).queryParam(password)
-						.request()
+				Response r =  target.path(userId)
+						.queryParam(RestUsers.PASSWORD, password).request()
 						.accept(MediaType.APPLICATION_JSON)
 						.delete();
 

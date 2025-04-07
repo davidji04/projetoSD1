@@ -28,7 +28,6 @@ public class DeleteUserClient {
         URI serverUrl = uris[0];
         String userId = args[0];
         String password = args[1];
-
         UsersClient client = null;
 
         if(serverUrl.toString().endsWith("rest"))
@@ -38,10 +37,11 @@ public class DeleteUserClient {
 
         Result<User> result = client.deleteUser(userId, password);
         if( result.isOK()  )
-            Log.info("Deleted user:" + result.value() );
+            Log.info("Deleted user:" + result.value() + "\n" );
         else
-            Log.info("Deleted user failed with error: " + result.error());
+            Log.info("Deleted user failed with error: " + result.error()+ "\n");
 
+        discovery.stop();
     }
 
 }
