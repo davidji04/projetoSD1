@@ -4,15 +4,12 @@ import java.net.URI;
 import java.util.List;
 import java.util.logging.Logger;
 
+import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.GenericType;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 
 import jakarta.ws.rs.ProcessingException;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -46,26 +43,27 @@ public class RestUsersClient extends UsersClient {
 	}
 		
 	public Result<String> createUser(User user) {
-		
+		Response r = executeOperationPost(target.request().accept(MediaType.APPLICATION_JSON), Entity.entity(user, MediaType.APPLICATION_JSON));
+
+		if (r == null)
+			return Result.error(ErrorCode.TIMEOUT);
+
+		int status = r.getStatus();
+		if (status != Status.OK.getStatusCode())
+			return Result.error(getErrorCodeFrom(status));
+		else
+			return Result.ok(r.readEntity(String.class));
+	}
+
+	private Response executeOperationPost(Invocation.Builder req, Entity<?> e){
 		for(int i = 0; i < MAX_RETRIES ; i++) {
 			try {
-				Response r = target.request()
-						.accept( MediaType.APPLICATION_JSON)
-						.post(Entity.entity(user, MediaType.APPLICATION_JSON));
-				
-				
-				int status = r.getStatus();
-				if( status != Status.OK.getStatusCode() )
-					return Result.error( getErrorCodeFrom(status));
-				else
-					return Result.ok( r.readEntity( String.class ));
-				
+				return req.post(e);
 			} catch( ProcessingException x ) {
 				Log.info(x.getMessage());
-				
 				try {
 					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e1) {
 					//Nothing to be done here.
 				}
 			}
@@ -73,27 +71,33 @@ public class RestUsersClient extends UsersClient {
 				x.printStackTrace();
 			}
 		}
-		return Result.error(  ErrorCode.TIMEOUT );
+		return null;
 	}
 
 	public Result<User> getUser(String userId, String pwd) {
-		for(int i= 0; i < MAX_RETRIES ; i++) {
-			try {
-				Response r = target.path(userId)
-						.queryParam(RestUsers.PASSWORD, pwd).request()
-						.accept(MediaType.APPLICATION_JSON)
-						.get();
+		Response r = executeOperationGet(target.path( userId )
+				.queryParam(RestUsers.PASSWORD, pwd).request()
+				.accept(MediaType.APPLICATION_JSON));
 
-				int status = r.getStatus();
-				if (status != Status.OK.getStatusCode())
-					return Result.error(getErrorCodeFrom(status));
-				else
-					return Result.ok(r.readEntity(User.class));
-			}catch (ProcessingException x ) {
+		if (r == null)
+			return Result.error(ErrorCode.TIMEOUT);
+
+		int status = r.getStatus();
+		if (status != Status.OK.getStatusCode())
+			return Result.error(getErrorCodeFrom(status));
+		else
+			return Result.ok(r.readEntity(User.class));
+	}
+
+	private Response executeOperationGet(Invocation.Builder req){
+		for(int i = 0; i < MAX_RETRIES ; i++) {
+			try {
+				return req.get();
+			} catch( ProcessingException x ) {
 				Log.info(x.getMessage());
 				try {
 					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e1) {
 					//Nothing to be done here.
 				}
 			}
@@ -101,27 +105,33 @@ public class RestUsersClient extends UsersClient {
 				x.printStackTrace();
 			}
 		}
-		return Result.error(  ErrorCode.TIMEOUT );
+		return null;
 	}
 	
 	
 
 	public Result<User> updateUser(String userId, String password, User user) {
-		for (int i = 0; i < MAX_RETRIES ; i++) {
-			try{
-				Response r = target.path(userId).queryParam(RestUsers.PASSWORD, password)
-						.request().accept(MediaType.APPLICATION_JSON)
-						.put(Entity.entity(user, MediaType.APPLICATION_JSON));
-				int status = r.getStatus();
-				if (status != Status.OK.getStatusCode())
-					return Result.error(getErrorCodeFrom(status));
-				else
-					return Result.ok(r.readEntity(User.class));
-			}catch(ProcessingException x){
+		Response r = executeOperationPut(target.path(userId).queryParam(RestUsers.PASSWORD, password).request().accept(MediaType.APPLICATION_JSON),Entity.entity(user, MediaType.APPLICATION_JSON));
+		if (r == null)
+			return Result.error(ErrorCode.TIMEOUT);
+
+
+		int status = r.getStatus();
+		if (status != Status.OK.getStatusCode())
+			return Result.error(getErrorCodeFrom(status));
+		else
+			return Result.ok(r.readEntity(User.class));
+
+	}
+	private Response executeOperationPut(Invocation.Builder req, Entity<?> e){
+		for(int i = 0; i < MAX_RETRIES ; i++) {
+			try {
+				return req.put(e);
+			} catch( ProcessingException x ) {
 				Log.info(x.getMessage());
 				try {
 					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e1) {
 					//Nothing to be done here.
 				}
 			}
@@ -129,27 +139,31 @@ public class RestUsersClient extends UsersClient {
 				x.printStackTrace();
 			}
 		}
-		return Result.error(  ErrorCode.TIMEOUT );
+		return null;
 	}
 
 	public Result<User> deleteUser(String userId, String password) {
-		for (int i = 0; i < MAX_RETRIES ; i++) {
-			try{
-				Response r =  target.path(userId)
-						.queryParam(RestUsers.PASSWORD, password).request()
-						.accept(MediaType.APPLICATION_JSON)
-						.delete();
+		Response r = executeOperationDelete(target.path(userId).queryParam(RestUsers.PASSWORD, password).request().accept(MediaType.APPLICATION_JSON));
 
-				int status = r.getStatus();
-				if (status != Status.OK.getStatusCode())
-					return Result.error(getErrorCodeFrom(status));
-				else
-					return Result.ok(r.readEntity(User.class));
-			}catch(ProcessingException x){
+		if(r == null)
+			return Result.error(ErrorCode.TIMEOUT);
+
+		int status = r.getStatus();
+		if (status != Status.OK.getStatusCode())
+			return Result.error(getErrorCodeFrom(status));
+		else
+			return Result.ok(r.readEntity(User.class));
+	}
+
+	private Response executeOperationDelete(Invocation.Builder req){
+		for(int i = 0; i < MAX_RETRIES ; i++) {
+			try {
+				return req.delete();
+			} catch( ProcessingException x ) {
 				Log.info(x.getMessage());
 				try {
 					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e1) {
 					//Nothing to be done here.
 				}
 			}
@@ -157,36 +171,23 @@ public class RestUsersClient extends UsersClient {
 				x.printStackTrace();
 			}
 		}
-		return Result.error(  ErrorCode.TIMEOUT );
+		return null;
 	}
 
 	public Result<List<User>> searchUsers(String pattern) {
-		for (int i = 0; i < MAX_RETRIES ; i++) {
-			try{
-				Response r = target.path("/").queryParam( RestUsers.QUERY, pattern).request()
-						.accept(MediaType.APPLICATION_JSON)
-						.get();
 
+		Response r = executeOperationGet(target.path("/").queryParam( RestUsers.QUERY, pattern).request()
+				.accept(MediaType.APPLICATION_JSON));
 
-				int status = r.getStatus();
-				if (status != Status.OK.getStatusCode())
-					return Result.error(getErrorCodeFrom(status));
-				else
-					return Result.ok(r.readEntity(new GenericType<>() {
-                    }));
-			}catch(ProcessingException x){
-				Log.info(x.getMessage());
-				try {
-					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException e) {
-					//Nothing to be done here.
-				}
-			}
-			catch( Exception x ) {
-				x.printStackTrace();
-			}
-		}
-		return Result.error(  ErrorCode.TIMEOUT );
+		if (r == null)
+			return Result.error(ErrorCode.TIMEOUT);
+
+		int status = r.getStatus();
+		if (status != Status.OK.getStatusCode())
+			return Result.error(getErrorCodeFrom(status));
+		else
+			return Result.ok(r.readEntity(new GenericType<>() {
+			}));
 	}
 
 	public static ErrorCode getErrorCodeFrom(int status) {
