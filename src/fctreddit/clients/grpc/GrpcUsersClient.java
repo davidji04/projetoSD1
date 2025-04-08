@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fctreddit.impl.server.grpc.generated_java.UsersGrpc;
+import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf;
 import io.grpc.Channel;
 import io.grpc.LoadBalancerRegistry;
 import io.grpc.ManagedChannelBuilder;
@@ -22,6 +23,11 @@ import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.CreateUserArgs;
 import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.CreateUserResult;
 import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.GetUserArgs;
 import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.GetUserResult;
+import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.UpdateUserArgs;
+import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.UpdateUserResult;
+import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.DeleteUserArgs;
+import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.DeleteUserResult;
+
 import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.GrpcUser;
 import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.SearchUserArgs;
 
@@ -66,12 +72,28 @@ public class GrpcUsersClient extends UsersClient {
 
 	@Override
 	public Result<User> updateUser(String userId, String pwd, User user) {
-		throw new RuntimeException("Not Implemented...");
-	}
+		try {
+			UpdateUserResult res = stub.updateUser(UpdateUserArgs.newBuilder()
+					.setUserId(userId).setPassword(pwd).setUser(DataModelAdaptor.User_to_GrpcUser(user))
+					.build());
+			return Result.ok(DataModelAdaptor.GrpcUser_to_User(res.getUser()));
+		}catch (StatusRuntimeException sre) {
+			return Result.error( statusToErrorCode(sre.getStatus()));
+		}
+    }
 
 	@Override
 	public Result<User> deleteUser(String userId, String pwd) {
-		throw new RuntimeException("Not Implemented...");
+		try {
+			DeleteUserResult res = stub.deleteUser(DeleteUserArgs.newBuilder()
+					.setUserId(userId).setPassword(pwd)
+					.build());
+
+			return Result.ok(DataModelAdaptor.GrpcUser_to_User(res.getUser()));
+		} catch (StatusRuntimeException sre) {
+			return Result.error( statusToErrorCode(sre.getStatus()));
+		}
+
 	}
 
 	@Override
