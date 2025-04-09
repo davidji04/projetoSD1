@@ -3941,10 +3941,9 @@ public final class UsersProtoBuf {
     boolean hasUser();
     /**
      * <code>.GrpcUser user = 3;</code>
-     *
      * @return The user.
      */
-    GrpcUser getUser();
+    fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.GrpcUser getUser();
     /**
      * <code>.GrpcUser user = 3;</code>
      */
@@ -4144,11 +4143,10 @@ public final class UsersProtoBuf {
     }
     /**
      * <code>.GrpcUser user = 3;</code>
-     *
      * @return The user.
      */
     @java.lang.Override
-    public GrpcUser getUser() {
+    public fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.GrpcUser getUser() {
       return user_ == null ? fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.GrpcUser.getDefaultInstance() : user_;
     }
     /**
@@ -4672,10 +4670,9 @@ public final class UsersProtoBuf {
       }
       /**
        * <code>.GrpcUser user = 3;</code>
-       *
        * @return The user.
        */
-      public GrpcUser getUser() {
+      public fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.GrpcUser getUser() {
         if (userBuilder_ == null) {
           return user_ == null ? fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.GrpcUser.getDefaultInstance() : user_;
         } else {
