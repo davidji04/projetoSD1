@@ -1,4 +1,4 @@
-package fctreddit.clients;
+package fctreddit.clients.users;
 
 import java.io.IOException;
 import java.net.URI;

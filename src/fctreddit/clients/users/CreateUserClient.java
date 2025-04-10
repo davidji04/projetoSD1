@@ -1,4 +1,4 @@
-package fctreddit.clients;
+package fctreddit.clients.users;
 
 import java.io.IOException;
 import java.net.URI;
@@ -34,7 +34,6 @@ public class CreateUserClient {
 		String password = args[3];
 		
 		User usr = new User( userId, fullName, email, password);
-		System.out.println(serverUrl.toString());
 		UsersClient client = null;
 		
 		if(serverUrl.toString().endsWith("rest"))

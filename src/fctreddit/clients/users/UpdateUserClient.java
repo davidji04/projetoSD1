@@ -1,4 +1,4 @@
-package fctreddit.clients;
+package fctreddit.clients.users;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,6 +22,7 @@ public class UpdateUserClient {
             System.err.println( "Use: java " + UpdateUserClient.class.getCanonicalName() + " userId oldpwd fullName email password");
             return;
         }
+
         Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);
         discovery.start();
         URI[] uris = discovery.knownUrisOf("Users",1);
@@ -34,7 +35,7 @@ public class UpdateUserClient {
         String email = args[3];
         String password = args[4];
 
-        User usr = new User( userId, fullName, email, password);
+        User user = new User( userId, fullName, email, password);
 
         UsersClient client = null;
 
@@ -43,7 +44,7 @@ public class UpdateUserClient {
         else
             client = new GrpcUsersClient(serverUrl);
 
-        Result<User> result = client.updateUser(userId,oldpwd,usr);
+        Result<User> result = client.updateUser(userId,oldpwd,user);
         if( result.isOK()  )
             Log.info("Updated user:" + result.value() + "\n");
         else

@@ -111,7 +111,10 @@ public class RestUsersClient extends UsersClient {
 	
 
 	public Result<User> updateUser(String userId, String password, User user) {
-		Response r = executeOperationPut(target.path(userId).queryParam(RestUsers.PASSWORD, password).request().accept(MediaType.APPLICATION_JSON),Entity.entity(user, MediaType.APPLICATION_JSON));
+		Response r = executeOperationPut(target.path(userId).queryParam(RestUsers.PASSWORD, password).request().accept(MediaType.APPLICATION_JSON)
+				,Entity.entity(user, MediaType.APPLICATION_JSON));
+
+
 		if (r == null)
 			return Result.error(ErrorCode.TIMEOUT);
 

@@ -45,6 +45,7 @@ public class GrpcUsersServerStub implements UsersGrpc.AsyncService, BindableServ
 
 	@Override
     public void getUser(GetUserArgs request, StreamObserver<GetUserResult> responseObserver) {
+
 		Result<User> res = impl.getUser(request.getUserId(), request.getPassword());
 		if( ! res.isOK() )
 			responseObserver.onError(errorCodeToStatus(res.error()));

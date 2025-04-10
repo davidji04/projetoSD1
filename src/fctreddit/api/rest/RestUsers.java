@@ -52,7 +52,7 @@ public interface RestUsers {
 
 	/**
 	 * Modifies the information of a user. Values of null in any field of the user
-	 * will be considered as if the the fields is not to be modified (the id cannot
+	 * will be considered as if the fields is not to be modified (the id cannot
 	 * be modified).
 	 * 
 	 * @param userId   the userId of the user
