@@ -19,7 +19,8 @@ public class Post {
 	public Post() {
 		
 	}
-	
+
+	//top entry, without media
 	public Post(String authorId, String content) {
 		this.postId = null;
 		this.authorId = authorId;
@@ -30,7 +31,8 @@ public class Post {
 		this.upVote = 0;
 		this.downVote = 0;
 	}
-	
+
+	//comment
 	public Post(String authorId, String content, String parentUrl) {
 		this(authorId, content);
 		this.parentUrl = parentUrl;
