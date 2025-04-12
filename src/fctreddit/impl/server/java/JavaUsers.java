@@ -37,7 +37,8 @@ public class JavaUsers implements Users {
 			}
 			hibernate.persist(user);
 		} catch (Exception e) {
-			e.printStackTrace(); //Most likely the exception is due to the user already existing...
+			e.printStackTrace();
+			return Result.error(ErrorCode.INTERNAL_ERROR);
 
 		}
 		

@@ -55,24 +55,24 @@ public class RestUsersClient extends UsersClient {
 			return Result.ok(r.readEntity(String.class));
 	}
 
-	private Response executeOperationPost(Invocation.Builder req, Entity<?> e){
-		for(int i = 0; i < MAX_RETRIES ; i++) {
-			try {
-				return req.post(e);
-			} catch( ProcessingException x ) {
-				Log.info(x.getMessage());
-				try {
-					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException e1) {
-					//Nothing to be done here.
-				}
-			}
-			catch( Exception x ) {
-				x.printStackTrace();
-			}
-		}
-		return null;
-	}
+//	private Response executeOperationPost(Invocation.Builder req, Entity<?> e){
+//		for(int i = 0; i < MAX_RETRIES ; i++) {
+//			try {
+//				return req.post(e);
+//			} catch( ProcessingException x ) {
+//				Log.info(x.getMessage());
+//				try {
+//					Thread.sleep(RETRY_SLEEP);
+//				} catch (InterruptedException e1) {
+//					//Nothing to be done here.
+//				}
+//			}
+//			catch( Exception x ) {
+//				x.printStackTrace();
+//			}
+//		}
+//		return null;
+//	}
 
 	public Result<User> getUser(String userId, String pwd) {
 		Response r = executeOperationGet(target.path( userId )
@@ -89,24 +89,24 @@ public class RestUsersClient extends UsersClient {
 			return Result.ok(r.readEntity(User.class));
 	}
 
-	private Response executeOperationGet(Invocation.Builder req){
-		for(int i = 0; i < MAX_RETRIES ; i++) {
-			try {
-				return req.get();
-			} catch( ProcessingException x ) {
-				Log.info(x.getMessage());
-				try {
-					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException e1) {
-					//Nothing to be done here.
-				}
-			}
-			catch( Exception x ) {
-				x.printStackTrace();
-			}
-		}
-		return null;
-	}
+//	private Response executeOperationGet(Invocation.Builder req){
+//		for(int i = 0; i < MAX_RETRIES ; i++) {
+//			try {
+//				return req.get();
+//			} catch( ProcessingException x ) {
+//				Log.info(x.getMessage());
+//				try {
+//					Thread.sleep(RETRY_SLEEP);
+//				} catch (InterruptedException e1) {
+//					//Nothing to be done here.
+//				}
+//			}
+//			catch( Exception x ) {
+//				x.printStackTrace();
+//			}
+//		}
+//		return null;
+//	}
 	
 	
 
@@ -126,24 +126,24 @@ public class RestUsersClient extends UsersClient {
 			return Result.ok(r.readEntity(User.class));
 
 	}
-	private Response executeOperationPut(Invocation.Builder req, Entity<?> e){
-		for(int i = 0; i < MAX_RETRIES ; i++) {
-			try {
-				return req.put(e);
-			} catch( ProcessingException x ) {
-				Log.info(x.getMessage());
-				try {
-					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException e1) {
-					//Nothing to be done here.
-				}
-			}
-			catch( Exception x ) {
-				x.printStackTrace();
-			}
-		}
-		return null;
-	}
+//	private Response executeOperationPut(Invocation.Builder req, Entity<?> e){
+//		for(int i = 0; i < MAX_RETRIES ; i++) {
+//			try {
+//				return req.put(e);
+//			} catch( ProcessingException x ) {
+//				Log.info(x.getMessage());
+//				try {
+//					Thread.sleep(RETRY_SLEEP);
+//				} catch (InterruptedException e1) {
+//					//Nothing to be done here.
+//				}
+//			}
+//			catch( Exception x ) {
+//				x.printStackTrace();
+//			}
+//		}
+//		return null;
+//	}
 
 	public Result<User> deleteUser(String userId, String password) {
 		Response r = executeOperationDelete(target.path(userId).queryParam(RestUsers.PASSWORD, password).request().accept(MediaType.APPLICATION_JSON));
@@ -158,24 +158,24 @@ public class RestUsersClient extends UsersClient {
 			return Result.ok(r.readEntity(User.class));
 	}
 
-	private Response executeOperationDelete(Invocation.Builder req){
-		for(int i = 0; i < MAX_RETRIES ; i++) {
-			try {
-				return req.delete();
-			} catch( ProcessingException x ) {
-				Log.info(x.getMessage());
-				try {
-					Thread.sleep(RETRY_SLEEP);
-				} catch (InterruptedException e1) {
-					//Nothing to be done here.
-				}
-			}
-			catch( Exception x ) {
-				x.printStackTrace();
-			}
-		}
-		return null;
-	}
+//	private Response executeOperationDelete(Invocation.Builder req){
+//		for(int i = 0; i < MAX_RETRIES ; i++) {
+//			try {
+//				return req.delete();
+//			} catch( ProcessingException x ) {
+//				Log.info(x.getMessage());
+//				try {
+//					Thread.sleep(RETRY_SLEEP);
+//				} catch (InterruptedException e1) {
+//					//Nothing to be done here.
+//				}
+//			}
+//			catch( Exception x ) {
+//				x.printStackTrace();
+//			}
+//		}
+//		return null;
+//	}
 
 	public Result<List<User>> searchUsers(String pattern) {
 
@@ -193,16 +193,5 @@ public class RestUsersClient extends UsersClient {
 			}));
 	}
 
-	public static ErrorCode getErrorCodeFrom(int status) {
-		return switch (status) {
-		case 200, 209 -> ErrorCode.OK;
-		case 409 -> ErrorCode.CONFLICT;
-		case 403 -> ErrorCode.FORBIDDEN;
-		case 404 -> ErrorCode.NOT_FOUND;
-		case 400 -> ErrorCode.BAD_REQUEST;
-		case 500 -> ErrorCode.INTERNAL_ERROR;
-		case 501 -> ErrorCode.NOT_IMPLEMENTED;
-		default -> ErrorCode.INTERNAL_ERROR;
-		};
-	}
+
 }
