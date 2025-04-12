@@ -28,7 +28,10 @@ public class SearchPostsClient {
 
         URI serverUrl = uris[0];
         Map<String,String> opt = ArgsParser.parseOptionalArgs(args,0);
-        long timestamp = Long.parseLong(opt.get("timestamp"));
+        String timestamp = opt.get("timestamp");
+        long timeStampL = 0;
+        if (timestamp != null)
+            timeStampL = Long.parseLong(timestamp);
         String sortBy = opt.get("sortby");
 
 
@@ -37,7 +40,7 @@ public class SearchPostsClient {
 
         client = new RestContentClient( serverUrl);
 
-        Result<List<String>> result = client.getPosts(timestamp,sortBy);
+        Result<List<String>> result = client.getPosts(timeStampL,sortBy);
         if( result.isOK()  )
             for( String s : result.value() ){
                 Log.info( s + "\n" );
