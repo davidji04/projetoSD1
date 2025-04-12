@@ -3,6 +3,7 @@ package fctreddit.impl.server.rest;
 import fctreddit.Discovery;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.Uri;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -10,7 +11,7 @@ import java.util.logging.Logger;
 
 public class ContentServer {
 
-    private static Logger Log = Logger.getLogger(UsersServer.class.getName());
+    private static Logger Log = Logger.getLogger(ContentServer.class.getName());
 
     static {
         System.setProperty("java.net.preferIPv4Stack", "true");
@@ -24,18 +25,21 @@ public class ContentServer {
     public static void main(String[] args) {
         try {
             ResourceConfig config = new ResourceConfig();
-            config.register(ContentResource.class);
 
             String ip = InetAddress.getLocalHost().getHostAddress();
             String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
-            JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
 
             Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR,SERVICE,serverURI);
 
-            Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
-
             discovery.start();
+            URI[] uris = discovery.knownUrisOf("Users",1);
 
+            ContentResource contentResource = new ContentResource(uris[0]);
+            config.register(contentResource);
+
+            JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
+
+            Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
         } catch( Exception e) {
             Log.severe(e.getMessage());
         }

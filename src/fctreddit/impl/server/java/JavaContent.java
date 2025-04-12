@@ -3,13 +3,33 @@ package fctreddit.impl.server.java;
 import fctreddit.api.Post;
 import fctreddit.api.java.Content;
 import fctreddit.api.java.Result;
+import fctreddit.impl.server.persistence.Hibernate;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
 
+import java.net.URI;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class JavaContent implements Content {
 
+
+    private static Logger Log = Logger.getLogger(JavaContent.class.getName());
+
+    private Hibernate hibernate;
+
+    private WebTarget usersTarget;
+
+
+    public JavaContent(URI usersServer) {
+        this.usersTarget = ClientBuilder.newClient().target(usersServer);
+        hibernate = Hibernate.getInstance();
+    }
     @Override
     public Result<String> createPost(Post post, String userPassword) {
+        Log.info("Create Post" + post);
+
+
         return null;
     }
 
