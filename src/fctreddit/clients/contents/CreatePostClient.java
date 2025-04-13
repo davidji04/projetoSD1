@@ -20,7 +20,7 @@ public class CreatePostClient {
     public static void main(String[] args) throws IOException {
 
         if( args.length < 3) {
-            System.err.println( "Use: java " + CreatePostClient.class.getCanonicalName() + " authorID content userPassword [--parentUrl url] [--mediaUrl url]");
+            System.err.println( "Use: java " + CreatePostClient.class.getCanonicalName() + "authorID content userPassword [--parentUrl url] [--mediaUrl url]");
             return;
         }
         Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);
