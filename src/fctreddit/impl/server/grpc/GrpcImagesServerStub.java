@@ -1,6 +1,5 @@
 package fctreddit.impl.server.grpc;
 
-import fctreddit.impl.grpc.util.DataModelAdaptor;
 import fctreddit.impl.server.grpc.generated_java.ImageGrpc;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.CreateImageArgs;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.CreateImageResult;
@@ -8,8 +7,6 @@ import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.DeleteImageArgs;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.DeleteImageResult;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.GetImageArgs;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.GetImageResult;
-import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.CreateUserResult;
-import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.GetUserResult;
 import fctreddit.impl.server.java.JavaImage;
 import io.grpc.BindableService;
 import io.grpc.ServerServiceDefinition;
@@ -21,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import fctreddit.api.User;
 import fctreddit.api.java.Image;
 
 public class GrpcImagesServerStub implements ImageGrpc.AsyncService, BindableService {
