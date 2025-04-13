@@ -1,7 +1,5 @@
 package fctreddit;
 
-import org.glassfish.jersey.server.Uri;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -63,15 +61,17 @@ public class Discovery {
 	private final MulticastSocket ms;
 	private boolean running;
 	private final Map<String, List<URI>> discoveredUris;
+
 	/**
 	 * @param serviceName the name of the service to announce
 	 * @param serviceURI  an uri string - representing the contact endpoint of the
 	 *                    service being announced
-	 * @throws IOException 
-	 * @throws UnknownHostException 
-	 * @throws SocketException 
+	 * @throws IOException
+	 * @throws UnknownHostException
+	 * @throws SocketException
 	 */
-    public Discovery(InetSocketAddress addr, String serviceName, String serviceURI) throws SocketException, UnknownHostException, IOException {
+	public Discovery(InetSocketAddress addr, String serviceName, String serviceURI)
+			throws SocketException, UnknownHostException, IOException {
 		this.addr = addr;
 		this.serviceName = serviceName;
 		this.serviceURI = serviceURI;
@@ -79,8 +79,8 @@ public class Discovery {
 		this.discoveredUris = new ConcurrentHashMap<String, List<URI>>();
 		if (this.addr == null) {
 			throw new RuntimeException("A multinet address has to be provided.");
-		} 
-		
+		}
+
 		this.ms = new MulticastSocket(addr.getPort());
 		this.ms.joinGroup(addr, NetworkInterface.getByInetAddress(InetAddress.getLocalHost()));
 	}
@@ -91,11 +91,13 @@ public class Discovery {
 
 	/**
 	 * Starts sending service announcements at regular intervals...
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	public void start() {
-		//If this discovery instance was initialized with information about a service, start the thread that makes the
-		//periodic announcement to the multicast address.
+		// If this discovery instance was initialized with information about a service,
+		// start the thread that makes the
+		// periodic announcement to the multicast address.
 		if (this.serviceName != null && this.serviceURI != null) {
 
 			Log.info(String.format("Starting Discovery announcements on: %s for: %s -> %s", addr, serviceName,
@@ -107,7 +109,7 @@ public class Discovery {
 			try {
 				// start thread to send periodic announcements
 				new Thread(() -> {
-					while(running) {
+					while (running) {
 						try {
 							ms.send(announcePkt);
 							Thread.sleep(DISCOVERY_ANNOUNCE_PERIOD);
@@ -132,8 +134,9 @@ public class Discovery {
 					String msg = new String(pkt.getData(), 0, pkt.getLength());
 					String[] msgElems = msg.split(DELIMITER);
 					if (msgElems.length == 2) { // periodic announcement
-						//System.out.println(msgElems[0]);
-						//System.out.printf("FROM %s (%s) : %s\n", pkt.getAddress().getHostName(), pkt.getAddress().getHostAddress(), msg);
+						// System.out.println(msgElems[0]);
+						// System.out.printf("FROM %s (%s) : %s\n", pkt.getAddress().getHostName(),
+						// pkt.getAddress().getHostAddress(), msg);
 						String name = msgElems[0];
 						URI uri = URI.create(msgElems[1]);
 						discoveredUris.computeIfAbsent(name, key -> new ArrayList<>()).add(uri);
@@ -147,13 +150,13 @@ public class Discovery {
 
 	public void stop() {
 		this.running = false;
-		try{
-			ms.leaveGroup(addr,NetworkInterface.getByInetAddress(InetAddress.getLocalHost()));
+		try {
+			ms.leaveGroup(addr, NetworkInterface.getByInetAddress(InetAddress.getLocalHost()));
 			ms.close();
 		} catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Returns the known services.
@@ -166,26 +169,27 @@ public class Discovery {
 	 */
 	public URI[] knownUrisOf(String serviceName, int minReplies) {
 		List<URI> result = new ArrayList<>();
-			while (true) {
-				result = discoveredUris.get(serviceName);
-				if ( result!=null && result.size() >= minReplies) break;
+		while (true) {
+			result = discoveredUris.get(serviceName);
+			if (result != null && result.size() >= minReplies)
+				break;
 
-				try {
-					Thread.sleep(DISCOVERY_RETRY_TIMEOUT);
-				} catch (InterruptedException e) {
-					Thread.currentThread().interrupt();
-					break;
-				}
+			try {
+				Thread.sleep(DISCOVERY_RETRY_TIMEOUT);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				break;
 			}
+		}
 
 		return result.toArray(new URI[0]);
 	}
 	/*
-	// Main just for testing purposes
-	public static void main(String[] args) throws Exception {
-		Discovery discovery = new Discovery(DISCOVERY_ADDR, "test",
-				"http://" + InetAddress.getLocalHost().getHostAddress());
-		discovery.start();
-	}
+	 * // Main just for testing purposes
+	 * public static void main(String[] args) throws Exception {
+	 * Discovery discovery = new Discovery(DISCOVERY_ADDR, "test",
+	 * "http://" + InetAddress.getLocalHost().getHostAddress());
+	 * discovery.start();
+	 * }
 	 */
 }
