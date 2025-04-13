@@ -2,13 +2,10 @@ package fctreddit.impl.server.rest;
 
 import java.util.logging.Logger;
 
-import fctreddit.api.User;
 import fctreddit.api.java.Image;
 import fctreddit.api.java.Result;
-import fctreddit.api.java.Users;
 import fctreddit.api.rest.RestImage;
 import fctreddit.impl.server.java.JavaImage;
-import fctreddit.impl.server.java.JavaUsers;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
 
