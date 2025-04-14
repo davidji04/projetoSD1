@@ -21,7 +21,7 @@ public class ImagesResource implements RestImage {
 
   @Override
   public String createImage(String userId, byte[] imageContents, String password) {
-    Log.info("createImage : " + userId + "\n");
+    Log.info("createImage : user = " + userId + "; image = " + imageContents + "; pwd = " + password + "\n");
 
     Result<String> res = impl.createImage(userId, imageContents, password);
     if (!res.isOK()) {
