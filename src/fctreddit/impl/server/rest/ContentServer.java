@@ -1,6 +1,8 @@
 package fctreddit.impl.server.rest;
 
 import fctreddit.Discovery;
+import fctreddit.clients.rest.RestImageClient;
+import fctreddit.clients.rest.RestUsersClient;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.Uri;
@@ -33,8 +35,8 @@ public class ContentServer {
 
             discovery.start();
             URI[] uris = discovery.knownUrisOf("Users",1);
-
-            ContentResource contentResource = new ContentResource(uris[0]);
+            URI[] imageURIs = discovery.knownUrisOf("Images",1);
+            ContentResource contentResource = new ContentResource(new RestUsersClient(uris[0]), new RestImageClient(imageURIs[0]));
             config.register(contentResource);
 
             JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);

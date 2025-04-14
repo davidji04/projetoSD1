@@ -78,6 +78,6 @@ public class RestImageClient extends ImagesClient {
     if (status != Status.OK.getStatusCode())
       return Result.error(getErrorCodeFrom(status));
 
-    return Result.ok(null);
+    return Result.ok();
   }
 }

@@ -5,6 +5,8 @@ import java.net.URI;
 import java.util.logging.Logger;
 
 import fctreddit.Discovery;
+import fctreddit.clients.rest.RestContentClient;
+import fctreddit.clients.rest.RestImageClient;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -24,19 +26,24 @@ public class UsersServer {
 	public static void main(String[] args) {
 		try {
 		ResourceConfig config = new ResourceConfig();
-		config.register(UsersResource.class);
 
 		String ip = InetAddress.getLocalHost().getHostAddress();
 		String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
-		JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
 
 		Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR,SERVICE,serverURI);
 
-		Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
 
 		discovery.start();
+		URI[] contentUris = discovery.knownUrisOf("Content",1);
+		URI[] imageURIs = discovery.knownUrisOf("Images",1);
+		UsersResource resource = new UsersResource(new RestContentClient(contentUris[0]), new RestImageClient(imageURIs[0]));
+;		config.register(UsersResource.class);
 
-		//More code can be executed here...
+		JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
+
+		Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
+
+			//More code can be executed here...
 		} catch( Exception e) {
 			Log.severe(e.getMessage());
 		}

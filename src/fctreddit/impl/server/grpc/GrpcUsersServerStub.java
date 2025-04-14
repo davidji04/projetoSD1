@@ -26,6 +26,11 @@ public class GrpcUsersServerStub implements UsersGrpc.AsyncService, BindableServ
 
 	Users impl = new JavaUsers();
 
+
+
+	public GrpcUsersServerStub() {
+
+	}
 	@Override
 	public final ServerServiceDefinition bindService() {
 		return UsersGrpc.bindService(this);

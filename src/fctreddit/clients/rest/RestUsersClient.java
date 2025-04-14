@@ -55,25 +55,6 @@ public class RestUsersClient extends UsersClient {
 			return Result.ok(r.readEntity(String.class));
 	}
 
-//	private Response executeOperationPost(Invocation.Builder req, Entity<?> e){
-//		for(int i = 0; i < MAX_RETRIES ; i++) {
-//			try {
-//				return req.post(e);
-//			} catch( ProcessingException x ) {
-//				Log.info(x.getMessage());
-//				try {
-//					Thread.sleep(RETRY_SLEEP);
-//				} catch (InterruptedException e1) {
-//					//Nothing to be done here.
-//				}
-//			}
-//			catch( Exception x ) {
-//				x.printStackTrace();
-//			}
-//		}
-//		return null;
-//	}
-
 	public Result<User> getUser(String userId, String pwd) {
 		Response r = executeOperationGet(target.path( userId )
 				.queryParam(RestUsers.PASSWORD, pwd).request()
@@ -88,27 +69,6 @@ public class RestUsersClient extends UsersClient {
 		else
 			return Result.ok(r.readEntity(User.class));
 	}
-
-//	private Response executeOperationGet(Invocation.Builder req){
-//		for(int i = 0; i < MAX_RETRIES ; i++) {
-//			try {
-//				return req.get();
-//			} catch( ProcessingException x ) {
-//				Log.info(x.getMessage());
-//				try {
-//					Thread.sleep(RETRY_SLEEP);
-//				} catch (InterruptedException e1) {
-//					//Nothing to be done here.
-//				}
-//			}
-//			catch( Exception x ) {
-//				x.printStackTrace();
-//			}
-//		}
-//		return null;
-//	}
-	
-	
 
 	public Result<User> updateUser(String userId, String password, User user) {
 		Response r = executeOperationPut(target.path(userId).queryParam(RestUsers.PASSWORD, password).request().accept(MediaType.APPLICATION_JSON)
@@ -126,24 +86,6 @@ public class RestUsersClient extends UsersClient {
 			return Result.ok(r.readEntity(User.class));
 
 	}
-//	private Response executeOperationPut(Invocation.Builder req, Entity<?> e){
-//		for(int i = 0; i < MAX_RETRIES ; i++) {
-//			try {
-//				return req.put(e);
-//			} catch( ProcessingException x ) {
-//				Log.info(x.getMessage());
-//				try {
-//					Thread.sleep(RETRY_SLEEP);
-//				} catch (InterruptedException e1) {
-//					//Nothing to be done here.
-//				}
-//			}
-//			catch( Exception x ) {
-//				x.printStackTrace();
-//			}
-//		}
-//		return null;
-//	}
 
 	public Result<User> deleteUser(String userId, String password) {
 		Response r = executeOperationDelete(target.path(userId).queryParam(RestUsers.PASSWORD, password).request().accept(MediaType.APPLICATION_JSON));
@@ -158,24 +100,7 @@ public class RestUsersClient extends UsersClient {
 			return Result.ok(r.readEntity(User.class));
 	}
 
-//	private Response executeOperationDelete(Invocation.Builder req){
-//		for(int i = 0; i < MAX_RETRIES ; i++) {
-//			try {
-//				return req.delete();
-//			} catch( ProcessingException x ) {
-//				Log.info(x.getMessage());
-//				try {
-//					Thread.sleep(RETRY_SLEEP);
-//				} catch (InterruptedException e1) {
-//					//Nothing to be done here.
-//				}
-//			}
-//			catch( Exception x ) {
-//				x.printStackTrace();
-//			}
-//		}
-//		return null;
-//	}
+
 
 	public Result<List<User>> searchUsers(String pattern) {
 
