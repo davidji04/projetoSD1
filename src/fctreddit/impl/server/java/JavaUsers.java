@@ -8,7 +8,7 @@ import fctreddit.api.java.Result;
 import fctreddit.api.java.Result.ErrorCode;
 import fctreddit.api.java.Users;
 import fctreddit.clients.java.ContentClient;
-import fctreddit.clients.java.ImageClient;
+import fctreddit.clients.java.ImagesClient;
 import fctreddit.clients.java.UsersClient;
 import fctreddit.impl.server.persistence.Hibernate;
 
@@ -20,28 +20,26 @@ public class JavaUsers implements Users {
 
 	private ContentClient contentClient;
 
-	private ImageClient imageClient;
-	
-	public JavaUsers(ContentClient contentClient, ImageClient imageClient) {
+	private ImagesClient imageClient;
+
+	public JavaUsers(ContentClient contentClient, ImagesClient imageClient) {
 		hibernate = Hibernate.getInstance();
 		this.contentClient = contentClient;
 		this.imageClient = imageClient;
 	}
 
-
-	
 	@Override
 	public Result<String> createUser(User user) {
 		Log.info("createUser : " + user + "\n");
 
 		// Check if user data is valid
-		if ( isInvalid(user.getUserId()) || isInvalid(user.getPassword()) || isInvalid(user.getFullName())
+		if (isInvalid(user.getUserId()) || isInvalid(user.getPassword()) || isInvalid(user.getFullName())
 				|| isInvalid(user.getEmail())) {
 			Log.info("User object invalid.\n");
 			return Result.error(ErrorCode.BAD_REQUEST);
 		}
 		try {
-			if(hibernate.get(User.class, user.getUserId()) != null) {
+			if (hibernate.get(User.class, user.getUserId()) != null) {
 				Log.info("User already exists.\n");
 				return Result.error(ErrorCode.CONFLICT);
 			}
@@ -52,20 +50,20 @@ public class JavaUsers implements Users {
 			return Result.error(ErrorCode.INTERNAL_ERROR);
 
 		}
-		
+
 		return Result.ok(user.getUserId());
 	}
 
 	@Override
 	public Result<User> getUser(String userId, String password) {
-		Log.info("getUser : user = " + userId + "; pwd = " + password+ "\n");
+		Log.info("getUser : user = " + userId + "; pwd = " + password + "\n");
 
 		// Check if user is valid
-		if ( isInvalid(userId)) {
+		if (isInvalid(userId)) {
 			Log.info("UserId null.\n");
 			return Result.error(ErrorCode.BAD_REQUEST);
 		}
-		
+
 		User user = null;
 		try {
 			user = hibernate.get(User.class, userId);
@@ -85,23 +83,23 @@ public class JavaUsers implements Users {
 			Log.info("Password is incorrect.\n");
 			return Result.error(ErrorCode.FORBIDDEN);
 		}
-		
+
 		return Result.ok(user);
 
 	}
 
-	private boolean isInvalid(String s){
-		return  s == null || s.trim().isEmpty() ;
+	private boolean isInvalid(String s) {
+		return s == null || s.trim().isEmpty();
 	}
 
 	@Override
 	public Result<User> updateUser(String userId, String password, User user) {
-	Log.info("updateUser : user = " + userId + "; pwd = " + password + "User: "+ user +"\n");
+		Log.info("updateUser : user = " + userId + "; pwd = " + password + "User: " + user + "\n");
 
-		try{
+		try {
 
 			Result<User> res = this.getUser(userId, password);
-			if(!res.isOK())
+			if (!res.isOK())
 				return Result.error(res.error());
 
 			User u = res.value();
@@ -118,12 +116,12 @@ public class JavaUsers implements Users {
 				u.setAvatarUrl(user.getAvatarUrl());
 			user = u;
 			hibernate.update(u);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return Result.error(ErrorCode.INTERNAL_ERROR);
 		}
 
-	return Result.ok(user);
+		return Result.ok(user);
 	}
 
 	@Override
@@ -131,29 +129,28 @@ public class JavaUsers implements Users {
 		Log.info("deleteUser : user = " + userId + "; pwd = " + password + "\n");
 
 		User u;
-		try{
+		try {
 			Result<User> res = this.getUser(userId, password);
-			if(!res.isOK())
+			if (!res.isOK())
 				return Result.error(res.error());
 			u = res.value();
 
 			hibernate.delete(u);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return Result.error(ErrorCode.INTERNAL_ERROR);
 		}
 		return Result.ok(u);
 	}
 
-
 	@Override
 	public Result<List<User>> searchUsers(String pattern) {
 		Log.info("searchUsers : pattern = " + pattern + "\n");
 
 		List<User> users = null;
-		try{
-			users = hibernate.jpql("SELECT u FROM User u WHERE u.userId LIKE '%" + pattern +"%'", User.class);
-		}catch(Exception e){
+		try {
+			users = hibernate.jpql("SELECT u FROM User u WHERE u.userId LIKE '%" + pattern + "%'", User.class);
+		} catch (Exception e) {
 			e.printStackTrace();
 			return Result.error(ErrorCode.INTERNAL_ERROR);
 		}

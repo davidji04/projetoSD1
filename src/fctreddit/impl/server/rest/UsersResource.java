@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import fctreddit.clients.java.ContentClient;
-import fctreddit.clients.java.ImageClient;
+import fctreddit.clients.java.ImagesClient;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
 import fctreddit.api.User;
@@ -19,18 +19,16 @@ public class UsersResource implements RestUsers {
 
 	final Users impl;
 
-
-
-	public UsersResource(ContentClient contentClient, ImageClient imageClient) {
+	public UsersResource(ContentClient contentClient, ImagesClient imageClient) {
 		impl = new JavaUsers(contentClient, imageClient);
 	}
 
 	@Override
 	public String createUser(User user) {
-		Log.info("createUser : " + user+  "\n");
-		
+		Log.info("createUser : " + user + "\n");
+
 		Result<String> res = impl.createUser(user);
-		if(!res.isOK()) {
+		if (!res.isOK()) {
 			throw new WebApplicationException(errorCodeToStatus(res.error()));
 		}
 		return res.value();
@@ -41,7 +39,7 @@ public class UsersResource implements RestUsers {
 		Log.info("getUser : user = " + userId + "; pwd = " + password + "\n");
 
 		Result<User> res = impl.getUser(userId, password);
-		if(!res.isOK()) {
+		if (!res.isOK()) {
 			throw new WebApplicationException(errorCodeToStatus(res.error()));
 		}
 		return res.value();
@@ -51,7 +49,7 @@ public class UsersResource implements RestUsers {
 	public User updateUser(String userId, String password, User user) {
 		Log.info("updateUser : user = " + userId + "; pwd = " + password + " ; userData = " + user + "\n");
 		Result<User> res = impl.updateUser(userId, password, user);
-		if(!res.isOK()) {
+		if (!res.isOK()) {
 			throw new WebApplicationException(errorCodeToStatus(res.error()));
 		}
 		return res.value();
@@ -61,7 +59,7 @@ public class UsersResource implements RestUsers {
 	public User deleteUser(String userId, String password) {
 		Log.info("deleteUser : user = " + userId + "; pwd = " + password + "\n");
 		Result<User> res = impl.deleteUser(userId, password);
-		if(!res.isOK()) {
+		if (!res.isOK()) {
 			throw new WebApplicationException(errorCodeToStatus(res.error()));
 		}
 		return res.value();
@@ -70,26 +68,26 @@ public class UsersResource implements RestUsers {
 	@Override
 	public List<User> searchUsers(String pattern) {
 		Log.info("searchUsers : pattern = " + pattern + "\n");
-		
+
 		Result<List<User>> res = impl.searchUsers(pattern);
-		
-		if(!res.isOK())
+
+		if (!res.isOK())
 			throw new WebApplicationException(errorCodeToStatus(res.error()));
-		
+
 		return res.value();
 	}
-	
-	protected static Status errorCodeToStatus( Result.ErrorCode error ) {
-    	Status status =  switch( error) {
-    	case NOT_FOUND -> Status.NOT_FOUND; 
-    	case CONFLICT -> Status.CONFLICT;
-    	case FORBIDDEN -> Status.FORBIDDEN;
-    	case NOT_IMPLEMENTED -> Status.NOT_IMPLEMENTED;
-    	case BAD_REQUEST -> Status.BAD_REQUEST;
-    	default -> Status.INTERNAL_SERVER_ERROR;
-    	};
-    	
-    	return status;
-    }
+
+	protected static Status errorCodeToStatus(Result.ErrorCode error) {
+		Status status = switch (error) {
+			case NOT_FOUND -> Status.NOT_FOUND;
+			case CONFLICT -> Status.CONFLICT;
+			case FORBIDDEN -> Status.FORBIDDEN;
+			case NOT_IMPLEMENTED -> Status.NOT_IMPLEMENTED;
+			case BAD_REQUEST -> Status.BAD_REQUEST;
+			default -> Status.INTERNAL_SERVER_ERROR;
+		};
+
+		return status;
+	}
 
 }

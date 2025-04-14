@@ -35,11 +35,8 @@ public class JavaImage implements Image {
   public Result<String> createImage(String userId, byte[] imageContents, String password) {
     Log.info("createImage : user = " + userId + "; image = " + imageContents + "; pwd = " + password + "\n");
 
-    Result<List<User>> userResult = users.searchUsers(userId);
-    if (!userResult.isOK() || userResult.value() == null) {
-      Log.info("User does not exist.\n");
-      return Result.error(ErrorCode.NOT_FOUND);
-    }
+    users.getUser(userId, password);
+
     try {
       String imageId = UUID.randomUUID().toString();
       String filename = DIR + "/" + imageId;
@@ -56,12 +53,7 @@ public class JavaImage implements Image {
     if (userId == null || imageId == null) {
       return Result.error(ErrorCode.BAD_REQUEST);
     }
-    Result<List<User>> userResult = users.searchUsers(userId);
-    if (!userResult.isOK() || userResult.value() == null) {
-      Log.info("User does not exist.\n");
-      return Result.error(ErrorCode.NOT_FOUND);
-    }
-
+    users.searchUsers(userId);
     try {
       String filename = DIR + "/" + imageId;
       Path imagePath = Paths.get(filename);
@@ -92,13 +84,7 @@ public class JavaImage implements Image {
       if (!Files.exists(imagePath)) {
         return Result.error(ErrorCode.NOT_FOUND);
       }
-
-      String storedPassword = Files.readString(imagePath);
-
-      if (password == null || !password.equals(storedPassword)) {
-        return Result.error(ErrorCode.FORBIDDEN);
-      }
-
+      users.getUser(userId, password);
       Files.delete(imagePath);
       return Result.ok(null);
     } catch (IOException e) {
