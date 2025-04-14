@@ -2,6 +2,9 @@ package fctreddit.impl.server.grpc;
 
 import java.util.List;
 
+import fctreddit.clients.java.ContentClient;
+import fctreddit.clients.java.ImagesClient;
+import fctreddit.clients.java.UsersClient;
 import fctreddit.impl.server.grpc.generated_java.UsersGrpc;
 import io.grpc.BindableService;
 import io.grpc.ServerServiceDefinition;
@@ -24,12 +27,13 @@ import fctreddit.impl.server.java.JavaUsers;
 
 public class GrpcUsersServerStub implements UsersGrpc.AsyncService, BindableService {
 
-	Users impl = new JavaUsers();
+
+	final Users impl;
 
 
 
-	public GrpcUsersServerStub() {
-
+	public GrpcUsersServerStub(ContentClient contentClient, ImagesClient imagesClient) {
+		impl = new JavaUsers(contentClient, imagesClient);
 	}
 	@Override
 	public final ServerServiceDefinition bindService() {

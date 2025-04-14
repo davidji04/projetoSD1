@@ -37,7 +37,7 @@ public class UsersServer {
 		URI[] contentUris = discovery.knownUrisOf("Content",1);
 		URI[] imageURIs = discovery.knownUrisOf("Images",1);
 		UsersResource resource = new UsersResource(new RestContentClient(contentUris[0]), new RestImageClient(imageURIs[0]));
-;		config.register(UsersResource.class);
+;		config.register(resource);
 
 		JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
 

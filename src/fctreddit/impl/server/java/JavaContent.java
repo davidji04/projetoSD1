@@ -3,13 +3,13 @@ package fctreddit.impl.server.java;
 import fctreddit.api.Post;
 import fctreddit.api.User;
 import fctreddit.api.java.Content;
-import fctreddit.api.java.Image;
+
 import fctreddit.api.java.Result;
 import fctreddit.clients.java.ImagesClient;
 import fctreddit.clients.java.UsersClient;
 import fctreddit.impl.server.persistence.Hibernate;
 
-import java.net.URI;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
