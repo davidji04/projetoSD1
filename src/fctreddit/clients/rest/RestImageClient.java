@@ -13,9 +13,9 @@ import org.glassfish.jersey.client.ClientProperties;
 import fctreddit.api.java.Result;
 import fctreddit.api.java.Result.ErrorCode;
 import fctreddit.api.rest.RestImage;
-import fctreddit.clients.java.ImageClient;
+import fctreddit.clients.java.ImagesClient;
 
-public class RestImageClient extends ImageClient {
+public class RestImageClient extends ImagesClient {
 
   final URI serverURI;
   final Client client;

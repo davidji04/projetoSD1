@@ -4,6 +4,7 @@ import fctreddit.Discovery;
 
 import fctreddit.api.java.Result;
 import fctreddit.clients.contents.Parser.ArgsParser;
+import fctreddit.clients.grpc.GrpcContentClient;
 import fctreddit.clients.java.ContentClient;
 import fctreddit.clients.rest.RestContentClient;
 
@@ -20,33 +21,32 @@ public class SearchPostsClient {
 
     public static void main(String[] args) throws IOException {
 
-
         Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR);
         discovery.start();
 
-        URI[] uris = discovery.knownUrisOf("Content",1);
+        URI[] uris = discovery.knownUrisOf("Content", 1);
 
         URI serverUrl = uris[0];
-        Map<String,String> opt = ArgsParser.parseOptionalArgs(args,0);
+        Map<String, String> opt = ArgsParser.parseOptionalArgs(args, 0);
         String timestamp = opt.get("timestamp");
         long timeStampL = 0;
         if (timestamp != null)
             timeStampL = Long.parseLong(timestamp);
         String sortBy = opt.get("sortby");
 
+        ContentClient client;
 
-        ContentClient client ;
-
-
-        client = new RestContentClient( serverUrl);
-
-        Result<List<String>> result = client.getPosts(timeStampL,sortBy);
-        if( result.isOK()  )
-            for( String s : result.value() ){
-                Log.info( s + "\n" );
+        if (serverUrl.toString().endsWith("rest"))
+            client = new RestContentClient(serverUrl);
+        else
+            client = new GrpcContentClient(serverUrl);
+        Result<List<String>> result = client.getPosts(timeStampL, sortBy);
+        if (result.isOK())
+            for (String s : result.value()) {
+                Log.info(s + "\n");
             }
         else
-            Log.info("Failed to list the posts:" + result.value() + "\n" );
+            Log.info("Failed to list the posts:" + result.value() + "\n");
 
         discovery.stop();
     }
