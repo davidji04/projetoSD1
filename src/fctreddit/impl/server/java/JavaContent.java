@@ -26,10 +26,10 @@ public class JavaContent implements Content {
 
     private ImageClient imageClient;
 
-    public JavaContent(UsersClient usersClient) {
+    public JavaContent(UsersClient usersClient, ImageClient imageClient) {
         hibernate = Hibernate.getInstance();
         this.usersClient = usersClient;
-       // this.imageClient = imageClient;
+        this.imageClient = imageClient;
     }
 
     private boolean isInvalid(String s){

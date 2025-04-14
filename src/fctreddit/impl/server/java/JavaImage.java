@@ -14,6 +14,7 @@ import fctreddit.api.java.Image;
 import fctreddit.api.java.Result;
 import fctreddit.api.java.Result.ErrorCode;
 import fctreddit.api.java.Users;
+import fctreddit.clients.java.UsersClient;
 
 public class JavaImage implements Image {
 

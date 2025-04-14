@@ -37,7 +37,7 @@ public class CreateUserClient {
 		UsersClient client = null;
 		
 		if(serverUrl.toString().endsWith("rest"))
-			client = new RestUsersClient( serverUrl  );
+			client = new RestUsersClient( serverUrl );
 		else
 			client = new GrpcUsersClient( serverUrl );
 		

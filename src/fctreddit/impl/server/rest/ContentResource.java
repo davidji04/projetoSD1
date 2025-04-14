@@ -5,11 +5,11 @@ import fctreddit.api.java.Content;
 import fctreddit.api.java.Result;
 import fctreddit.api.rest.RestContent;
 import fctreddit.clients.java.UsersClient;
+import fctreddit.clients.rest.RestImageClient;
 import fctreddit.impl.server.java.JavaContent;
 import jakarta.ws.rs.WebApplicationException;
 
 
-import java.net.URI;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,8 +23,8 @@ public class ContentResource implements RestContent {
 
     final Content impl;
 
-    public ContentResource(UsersClient usersClient) {
-        impl = new JavaContent(usersClient);
+    public ContentResource(UsersClient usersClient, RestImageClient imageClient) {
+        impl = new JavaContent(usersClient, imageClient);
     }
 
     private void checkResult(Result result) {

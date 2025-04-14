@@ -1,6 +1,7 @@
 package fctreddit.impl.server.grpc;
 
 import java.net.InetAddress;
+import java.net.URI;
 import java.util.logging.Logger;
 
 import fctreddit.Discovery;
@@ -20,16 +21,19 @@ public static final int PORT = 9000;
 	private static Logger Log = Logger.getLogger(UsersServer.class.getName());
 	
 	public static void main(String[] args) throws Exception {
-		
+		String serverURI = String.format(SERVER_BASE_URI, InetAddress.getLocalHost().getHostAddress(), PORT, GRPC_CTX);
+
+
+		Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR,SERVICE,serverURI);
+		discovery.start();
+		Log.info(String.format("Users gRPC Server ready @ %s\n", serverURI));
+
+		URI[] contentUris = discovery.knownUrisOf("Content",1);
+		URI[] imageURIs = discovery.knownUrisOf("Images",1);
 		GrpcUsersServerStub stub = new GrpcUsersServerStub();
 		ServerCredentials cred = InsecureServerCredentials.create();
 		Server server = Grpc.newServerBuilderForPort(PORT, cred) .addService(stub).build();
-		String serverURI = String.format(SERVER_BASE_URI, InetAddress.getLocalHost().getHostAddress(), PORT, GRPC_CTX);
-		Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR,SERVICE,serverURI);
-
-		Log.info(String.format("Users gRPC Server ready @ %s\n", serverURI));
 		server.start().awaitTermination();
-		discovery.start();
 	}
 }
 

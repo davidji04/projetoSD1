@@ -3,6 +3,8 @@ package fctreddit.impl.server.rest;
 import java.util.List;
 import java.util.logging.Logger;
 
+import fctreddit.clients.java.ContentClient;
+import fctreddit.clients.java.ImageClient;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response.Status;
 import fctreddit.api.User;
@@ -16,9 +18,11 @@ public class UsersResource implements RestUsers {
 	private static final Logger Log = Logger.getLogger(UsersResource.class.getName());
 
 	final Users impl;
-	
-	public UsersResource() {
-		impl = new JavaUsers();
+
+
+
+	public UsersResource(ContentClient contentClient, ImageClient imageClient) {
+		impl = new JavaUsers(contentClient, imageClient);
 	}
 
 	@Override
