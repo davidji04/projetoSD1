@@ -88,22 +88,26 @@ public class JavaUsers implements Users {
 	Log.info("updateUser : user = " + userId + "; pwd = " + password + "User: "+ user +"\n");
 
 		// Check if user is valid
-		if (isInvalid(userId)) {
-			Log.info("UserId null.\n");
-			return Result.error(ErrorCode.BAD_REQUEST);
-		}
+//		if (isInvalid(userId)) {
+//			Log.info("UserId null.\n");
+//			return Result.error(ErrorCode.BAD_REQUEST);
+//		}
 		try{
-			User u = hibernate.get(User.class, userId);
-			if(u == null) {
-				Log.info("User does not exist.\n");
-				return Result.error(ErrorCode.NOT_FOUND);
-			}
 
-			if (!password.equals(u.getPassword())) {
-				Log.info("Password is incorrect.\n");
-				return Result.error(ErrorCode.FORBIDDEN);
-			}
-
+			Result<User> res = this.getUser(userId, password);
+			if(!res.isOK())
+				return Result.error(res.error());
+			//User u = hibernate.get(User.class, userId);
+//			if(u == null) {
+//				Log.info("User does not exist.\n");
+//				return Result.error(ErrorCode.NOT_FOUND);
+//			}
+//
+//			if (!password.equals(u.getPassword())) {
+//				Log.info("Password is incorrect.\n");
+//				return Result.error(ErrorCode.FORBIDDEN);
+//			}
+			User u = res.value();
 			if (user.getFullName() != null)
 				u.setFullName(user.getFullName());
 
@@ -129,22 +133,25 @@ public class JavaUsers implements Users {
 	public Result<User> deleteUser(String userId, String password) {
 		Log.info("deleteUser : user = " + userId + "; pwd = " + password + "\n");
 		// Check if user is valid
-		if (isInvalid(userId) || isInvalid(password)) {
-			Log.info("UserId or password null.\n");
-			return Result.error(ErrorCode.BAD_REQUEST);
-		}
+//		if (isInvalid(userId)) {
+//			Log.info("UserId or password null.\n");
+//			return Result.error(ErrorCode.BAD_REQUEST);
+//		}
 		User u;
 		try{
-			u = hibernate.get(User.class, userId);
-			if(u == null) {
-				Log.info("User does not exist.\n");
-				return Result.error(ErrorCode.NOT_FOUND);
-			}
-
-			if (!password.equals(u.getPassword())) {
-				Log.info("Password is incorrect.\n");
-				return Result.error(ErrorCode.FORBIDDEN);
-			}
+			Result<User> res = this.getUser(userId, password);
+			if(!res.isOK())
+				return Result.error(res.error());
+			u = res.value();
+//			if(u == null) {
+//				Log.info("User does not exist.\n");
+//				return Result.error(ErrorCode.NOT_FOUND);
+//			}
+//
+//			if (!password.equals(u.getPassword())) {
+//				Log.info("Password is incorrect.\n");
+//				return Result.error(ErrorCode.FORBIDDEN);
+//			}
 
 			hibernate.delete(u);
 		}catch(Exception e) {
