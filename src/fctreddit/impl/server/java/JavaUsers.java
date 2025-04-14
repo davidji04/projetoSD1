@@ -7,6 +7,9 @@ import fctreddit.api.User;
 import fctreddit.api.java.Result;
 import fctreddit.api.java.Result.ErrorCode;
 import fctreddit.api.java.Users;
+import fctreddit.clients.java.ContentClient;
+import fctreddit.clients.java.ImageClient;
+import fctreddit.clients.java.UsersClient;
 import fctreddit.impl.server.persistence.Hibernate;
 
 public class JavaUsers implements Users {
@@ -14,10 +17,16 @@ public class JavaUsers implements Users {
 	private static Logger Log = Logger.getLogger(JavaUsers.class.getName());
 
 	private Hibernate hibernate;
+
+	private ContentClient contentClient;
+
+	private ImageClient imageClient;
 	
 	public JavaUsers() {
 		hibernate = Hibernate.getInstance();
 	}
+
+
 	
 	@Override
 	public Result<String> createUser(User user) {

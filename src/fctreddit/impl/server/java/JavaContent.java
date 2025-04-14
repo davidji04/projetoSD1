@@ -3,7 +3,10 @@ package fctreddit.impl.server.java;
 import fctreddit.api.Post;
 import fctreddit.api.User;
 import fctreddit.api.java.Content;
+import fctreddit.api.java.Image;
 import fctreddit.api.java.Result;
+import fctreddit.clients.java.ImageClient;
+import fctreddit.clients.java.UsersClient;
 import fctreddit.impl.server.persistence.Hibernate;
 
 import java.net.URI;
@@ -18,12 +21,15 @@ public class JavaContent implements Content {
 
     private final Hibernate hibernate;
 
-    private UserAuthenticationService userAuthenticationService;
 
+    private UsersClient usersClient;
 
-    public JavaContent(URI usersServer) {
-        userAuthenticationService = new UserAuthenticationService(usersServer);
+    private ImageClient imageClient;
+
+    public JavaContent(UsersClient usersClient) {
         hibernate = Hibernate.getInstance();
+        this.usersClient = usersClient;
+       // this.imageClient = imageClient;
     }
 
     private boolean isInvalid(String s){
@@ -33,13 +39,16 @@ public class JavaContent implements Content {
     @Override
     public Result<String> createPost(Post post, String userPassword) {
         Log.info("Create Post" + post);
-        Result<User> r = userAuthenticationService.authenticateUser(post.getAuthorId(), userPassword);
+
+        if(isInvalid(post.getAuthorId()) || isInvalid(post.getContent()))
+            return Result.error(Result.ErrorCode.BAD_REQUEST);
+
+        Result<User> r = usersClient.getUser(post.getAuthorId(), userPassword);
         if(!r.isOK())
             return Result.error(r.error());
         // Generate postId
         String id = UUID.randomUUID().toString();
         long creationTime = System.currentTimeMillis();
-        if(isInvalid(post.getAuthorId()) || isInvalid(post.getContent())) return Result.error(Result.ErrorCode.BAD_REQUEST);
 
 
         Post newPost = new Post(id, post.getAuthorId(),creationTime,post.getContent(),post.getMediaUrl(), post.getParentUrl(), post.getUpVote(), post.getDownVote());
@@ -131,7 +140,8 @@ public class JavaContent implements Content {
             return Result.error(result.error());
 
         if(isInvalid(post.getAuthorId())) return Result.error(Result.ErrorCode.BAD_REQUEST);
-        Result<User> r = userAuthenticationService.authenticateUser(post.getAuthorId(), userPassword);
+
+        Result<User> r = usersClient.getUser(post.getAuthorId(), userPassword);
         if(!r.isOK())
             return Result.error(r.error());
 

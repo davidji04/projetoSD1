@@ -4,6 +4,7 @@ import fctreddit.api.Post;
 import fctreddit.api.java.Content;
 import fctreddit.api.java.Result;
 import fctreddit.api.rest.RestContent;
+import fctreddit.clients.java.UsersClient;
 import fctreddit.impl.server.java.JavaContent;
 import jakarta.ws.rs.WebApplicationException;
 
@@ -22,8 +23,8 @@ public class ContentResource implements RestContent {
 
     final Content impl;
 
-    public ContentResource(URI usersServer) {
-        impl = new JavaContent(usersServer);
+    public ContentResource(UsersClient usersClient) {
+        impl = new JavaContent(usersClient);
     }
 
     private void checkResult(Result result) {

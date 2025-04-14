@@ -24,19 +24,24 @@ public class UsersServer {
 	public static void main(String[] args) {
 		try {
 		ResourceConfig config = new ResourceConfig();
-		config.register(UsersResource.class);
 
 		String ip = InetAddress.getLocalHost().getHostAddress();
 		String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
-		JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
 
 		Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR,SERVICE,serverURI);
 
-		Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
 
 		discovery.start();
+		URI[] uris = discovery.knownUrisOf("Users",1);
+		URI[] imageURIs = discovery.knownUrisOf("Images",1);
+		UsersResource resource = new UsersResource()
+;		config.register(UsersResource.class);
 
-		//More code can be executed here...
+		JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
+
+		Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
+
+			//More code can be executed here...
 		} catch( Exception e) {
 			Log.severe(e.getMessage());
 		}
