@@ -3,13 +3,13 @@ package fctreddit.impl.server.java;
 import fctreddit.api.Post;
 import fctreddit.api.User;
 import fctreddit.api.java.Content;
-import fctreddit.api.java.Image;
+
 import fctreddit.api.java.Result;
 import fctreddit.clients.java.ImagesClient;
 import fctreddit.clients.java.UsersClient;
 import fctreddit.impl.server.persistence.Hibernate;
 
-import java.net.URI;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -52,6 +52,11 @@ public class JavaContent implements Content {
                 post.getParentUrl(), post.getUpVote(), post.getDownVote());
 
         try {
+            if(post.getParentUrl()!=null) {
+                Result<Void> result = updateParentPostReplies(post.getParentUrl(), id);
+                if (!result.isOK())
+                    return Result.error(result.error());
+            }
             hibernate.persist(newPost);
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,6 +65,21 @@ public class JavaContent implements Content {
 
         return Result.ok(id);
     }
+    private Result<Void> updateParentPostReplies(String parentUrl, String postId){
+           Result<Post> res = this.getPost(parentUrl.substring(parentUrl.lastIndexOf("/") + 1));
+           if(!res.isOK())
+               return Result.error(res.error());
+           try{
+               Post p = res.value();
+               p.addReply(postId);
+               hibernate.update(p);
+           }catch(Exception e){
+               e.printStackTrace();
+               return Result.error(Result.ErrorCode.INTERNAL_ERROR);
+           }
+           return Result.ok();
+    }
+
 
     @Override
     public Result<List<String>> getPosts(long timestamp, String sortOrder) {
@@ -70,9 +90,9 @@ public class JavaContent implements Content {
         }
         if (sortOrder != null) {
             if (sortOrder.equals(MOST_UP_VOTES))
-                query += " ORDER BY p.upVotes DESC";
+                query += " ORDER BY p.upVote DESC";
             else if (sortOrder.equals(MOST_REPLIES))
-                query += " ORDER BY p.replies DESC";
+                query += " ORDER BY p.numReplies DESC";
         } else
             query += " ORDER BY p.creationTimestamp";
 
@@ -112,20 +132,17 @@ public class JavaContent implements Content {
     public Result<List<String>> getPostAnswers(String postId, long maxTimeout) {
         Log.info("Get PostAnswers " + postId);
 
-        List<String> post = null;
+        List<String> posts = null;
         try {
             Result<Post> result = getPost(postId);
             if (!result.isOK())
                 return Result.error(result.error());
-            post = hibernate.jpql(
-                    "SELECT p.postId FROM Post p WHERE p.parentUrl = '" + postId + "' ORDER BY p.creationTimestamp",
-                    String.class);
-
+            posts = result.value().getReplies();
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error(Result.ErrorCode.INTERNAL_ERROR);
         }
-        return Result.ok(post);
+        return Result.ok(posts);
     }
 
     @Override
@@ -195,12 +212,6 @@ public class JavaContent implements Content {
         if (!result.isOK())
             return Result.error(result.error());
 
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.error(Result.ErrorCode.INTERNAL_ERROR);
-        }
-        return null;
+        return Result.ok(result.value().getDownVote());
     }
 }
