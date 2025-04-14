@@ -7,15 +7,22 @@ import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.DeleteImageArgs;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.DeleteImageResult;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.GetImageArgs;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.GetImageResult;
+import fctreddit.impl.server.java.JavaImage;
 import io.grpc.BindableService;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.stub.StreamObserver;
 import fctreddit.api.java.Result;
-import fctreddit.impl.server.java.JavaImage;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.UUID;
+
 import fctreddit.api.java.Image;
 
 public class GrpcImagesServerStub implements ImageGrpc.AsyncService, BindableService {
 
+  private final String IMAGE_DIR = "../images";
   Image impl = new JavaImage();
 
   @Override
@@ -25,19 +32,48 @@ public class GrpcImagesServerStub implements ImageGrpc.AsyncService, BindableSer
 
   @Override
   public void createImage(CreateImageArgs request, StreamObserver<CreateImageResult> responseObserver) {
-
+    try {
+      String imageId = UUID.randomUUID().toString(); // isto é aqui?
+      String password = request.hasPassword() ? request.getPassword() : null;
+      String filename = IMAGE_DIR + "/" + imageId;
+      Files.write(Paths.get(filename), request.getImageContents().toByteArray());
+      Result<String> res = impl.createImage(imageId, request.getImageContents().toByteArray(), password);
+      if (!res.isOK())
+        responseObserver.onError(errorCodeToStatus(res.error()));
+      else {
+        responseObserver.onNext(CreateImageResult.newBuilder().setImageId(res.value()).build());
+        responseObserver.onCompleted();
+      }
+    } catch (IOException e) {
+    }
   }
 
   @Override
   public void getImage(GetImageArgs request, StreamObserver<GetImageResult> responseObserver) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getImage'");
+    Result<byte[]> res = impl.getImage(request.getUserId(), request.getImageId());
+    if (!res.isOK())
+      responseObserver.onError(errorCodeToStatus(res.error()));
+    else {
+      GetImageResult result = GetImageResult.newBuilder().setData(com.google.protobuf.ByteString.copyFrom(res.value()))
+          .build();
+      responseObserver.onNext(result);
+      responseObserver.onCompleted();
+    }
   }
 
   @Override
   public void deleteImage(DeleteImageArgs request, StreamObserver<DeleteImageResult> responseObserver) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'deleteImage'");
+    String password = request.hasPassword() ? request.getPassword() : null;
+
+    Result<Void> res = impl.deleteImage(request.getUserId(), request.getImageId(), password);
+
+    if (!res.isOK()) {
+      responseObserver.onError(errorCodeToStatus(res.error()));
+    } else {
+      DeleteImageResult result = DeleteImageResult.newBuilder().build();
+      responseObserver.onNext(result);
+      responseObserver.onCompleted();
+    }
   }
 
   protected static Throwable errorCodeToStatus(Result.ErrorCode error) {
