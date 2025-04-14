@@ -23,6 +23,7 @@ import fctreddit.api.java.Image;
 public class GrpcImagesServerStub implements ImageGrpc.AsyncService, BindableService {
 
   private final String IMAGE_DIR = "../images";
+
   Image impl = new JavaImage();
 
   @Override
@@ -32,19 +33,13 @@ public class GrpcImagesServerStub implements ImageGrpc.AsyncService, BindableSer
 
   @Override
   public void createImage(CreateImageArgs request, StreamObserver<CreateImageResult> responseObserver) {
-    try {
-      String imageId = UUID.randomUUID().toString(); // isto é aqui?
-      String password = request.hasPassword() ? request.getPassword() : null;
-      String filename = IMAGE_DIR + "/" + imageId;
-      Files.write(Paths.get(filename), request.getImageContents().toByteArray());
-      Result<String> res = impl.createImage(imageId, request.getImageContents().toByteArray(), password);
-      if (!res.isOK())
-        responseObserver.onError(errorCodeToStatus(res.error()));
-      else {
-        responseObserver.onNext(CreateImageResult.newBuilder().setImageId(res.value()).build());
-        responseObserver.onCompleted();
-      }
-    } catch (IOException e) {
+    String password = request.hasPassword() ? request.getPassword() : null;
+    Result<String> res = impl.createImage(request.getUserId(), request.getImageContents().toByteArray(), password);
+    if (!res.isOK())
+      responseObserver.onError(errorCodeToStatus(res.error()));
+    else {
+      responseObserver.onNext(CreateImageResult.newBuilder().setImageId(res.value()).build());
+      responseObserver.onCompleted();
     }
   }
 

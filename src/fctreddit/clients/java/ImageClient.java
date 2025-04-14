@@ -3,13 +3,12 @@ package fctreddit.clients.java;
 import fctreddit.api.java.Image;
 import fctreddit.api.java.Result;
 
-public abstract class ImageClient extends Client implements Image  {
+public abstract class ImageClient extends Client implements Image {
 
-	
-	abstract public Result<String> createImage(byte[] imageContents);;
+	abstract public Result<String> createImage(String userId, byte[] imageContents, String password);
 
-	abstract public Result<byte[]> getImage(String imageId);
-	
-	abstract public Result<Void> deleteImage(String imageId);
+	abstract public Result<byte[]> getImage(String userId, String imageId);
+
+	abstract public Result<Void> deleteImage(String userId, String imageId, String password);
 
 }
