@@ -5,6 +5,8 @@ import java.net.URI;
 import java.util.logging.Logger;
 
 import fctreddit.Discovery;
+import fctreddit.clients.grpc.GrpcContentClient;
+import fctreddit.clients.grpc.GrpcImagesClient;
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
 import io.grpc.Server;
@@ -30,7 +32,7 @@ public static final int PORT = 9000;
 
 		URI[] contentUris = discovery.knownUrisOf("Content",1);
 		URI[] imageURIs = discovery.knownUrisOf("Images",1);
-		GrpcUsersServerStub stub = new GrpcUsersServerStub();
+		GrpcUsersServerStub stub = new GrpcUsersServerStub(new GrpcContentClient(contentUris[0]), new GrpcImagesClient(imageURIs[0]));
 		ServerCredentials cred = InsecureServerCredentials.create();
 		Server server = Grpc.newServerBuilderForPort(PORT, cred) .addService(stub).build();
 		server.start().awaitTermination();
