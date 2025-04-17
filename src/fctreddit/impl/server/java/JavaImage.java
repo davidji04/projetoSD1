@@ -57,6 +57,8 @@ public class JavaImage implements Image {
       return Result.error(ErrorCode.BAD_REQUEST);
     }
     Result<List<User>> r = users.searchUsers(userId);
+    if (!r.isOK())
+      return Result.error(r.error());
     try {
       String filename = DIR + "/" + imageId;
       Path imagePath = Paths.get(filename);
