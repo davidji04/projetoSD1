@@ -5,7 +5,6 @@ import fctreddit.clients.rest.RestImageClient;
 import fctreddit.clients.rest.RestUsersClient;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.Uri;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -31,18 +30,19 @@ public class ContentServer {
             String ip = InetAddress.getLocalHost().getHostAddress();
             String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
 
-            Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR,SERVICE,serverURI);
+            Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR, SERVICE, serverURI);
 
             discovery.start();
-            URI[] uris = discovery.knownUrisOf("Users",1);
-            URI[] imageURIs = discovery.knownUrisOf("Images",1);
-            ContentResource contentResource = new ContentResource(new RestUsersClient(uris[0]), new RestImageClient(imageURIs[0]));
+            URI[] uris = discovery.knownUrisOf("Users", 1);
+            URI[] imageURIs = discovery.knownUrisOf("Images", 1);
+            ContentResource contentResource = new ContentResource(new RestUsersClient(uris[0]),
+                    new RestImageClient(imageURIs[0]));
             config.register(contentResource);
 
-            JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
+            JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
 
-            Log.info(String.format("%s Server ready @ %s\n",  SERVICE, serverURI));
-        } catch( Exception e) {
+            Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));
+        } catch (Exception e) {
             Log.severe(e.getMessage());
         }
     }

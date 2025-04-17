@@ -1,7 +1,6 @@
 package fctreddit.clients.contents;
 
 import fctreddit.Discovery;
-import fctreddit.api.Post;
 import fctreddit.api.java.Result;
 import fctreddit.clients.grpc.GrpcContentClient;
 import fctreddit.clients.java.ContentClient;

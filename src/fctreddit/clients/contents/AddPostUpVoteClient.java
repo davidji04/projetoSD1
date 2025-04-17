@@ -1,18 +1,13 @@
 package fctreddit.clients.contents;
 
 import fctreddit.Discovery;
-import fctreddit.api.Post;
 import fctreddit.api.java.Result;
-import fctreddit.clients.contents.Parser.ArgsParser;
 import fctreddit.clients.grpc.GrpcContentClient;
-import fctreddit.clients.grpc.GrpcUsersClient;
 import fctreddit.clients.java.ContentClient;
 import fctreddit.clients.rest.RestContentClient;
-import fctreddit.clients.rest.RestUsersClient;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class AddPostUpVoteClient {

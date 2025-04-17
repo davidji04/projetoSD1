@@ -1,7 +1,6 @@
 package fctreddit.clients.rest;
 
 import fctreddit.api.Post;
-import fctreddit.api.User;
 import fctreddit.api.java.Result;
 import fctreddit.api.rest.RestContent;
 import fctreddit.api.rest.RestUsers;
@@ -18,13 +17,8 @@ import org.glassfish.jersey.client.ClientProperties;
 
 import java.net.URI;
 import java.util.List;
-import java.util.logging.Logger;
-
-
 
 public class RestContentClient extends ContentClient {
-
-    private static Logger Log = Logger.getLogger(RestUsersClient.class.getName());
 
     final URI serverURI;
     final Client client;
@@ -32,30 +26,29 @@ public class RestContentClient extends ContentClient {
 
     final WebTarget target;
 
-
-    public RestContentClient( URI serverURI ) {
+    public RestContentClient(URI serverURI) {
         this.serverURI = serverURI;
 
         this.config = new ClientConfig();
 
-        config.property( ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
-        config.property( ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
-
+        config.property(ClientProperties.READ_TIMEOUT, READ_TIMEOUT);
+        config.property(ClientProperties.CONNECT_TIMEOUT, CONNECT_TIMEOUT);
 
         this.client = ClientBuilder.newClient(config);
 
-        target = client.target( serverURI ).path( RestUsers.PATH );
+        target = client.target(serverURI).path(RestUsers.PATH);
     }
 
     @Override
     public Result<String> createPost(Post post, String userPassword) {
-        Response r = executeOperationPost(target.queryParam(RestContent.PASSWORD,userPassword).request().accept(MediaType.APPLICATION_JSON),
+        Response r = executeOperationPost(
+                target.queryParam(RestContent.PASSWORD, userPassword).request().accept(MediaType.APPLICATION_JSON),
                 Entity.entity(post, MediaType.APPLICATION_JSON));
-        if(r == null)
+        if (r == null)
             return Result.error(Result.ErrorCode.TIMEOUT);
 
         int status = r.getStatus();
-        if(status != Response.Status.OK.getStatusCode())
+        if (status != Response.Status.OK.getStatusCode())
             return Result.error(getErrorCodeFrom(status));
         else
             return Result.ok(r.readEntity(String.class));
@@ -63,7 +56,8 @@ public class RestContentClient extends ContentClient {
 
     @Override
     public Result<List<String>> getPosts(long timestamp, String sortOrder) {
-        Response r = executeOperationGet(target.path(RestContent.PATH).queryParam(RestContent.TIMESTAMP,timestamp).queryParam(RestContent.SORTBY,sortOrder)
+        Response r = executeOperationGet(target.path(RestContent.PATH).queryParam(RestContent.TIMESTAMP, timestamp)
+                .queryParam(RestContent.SORTBY, sortOrder)
                 .request().accept(MediaType.APPLICATION_JSON));
         if (r == null)
             return Result.error(Result.ErrorCode.TIMEOUT);
@@ -72,7 +66,8 @@ public class RestContentClient extends ContentClient {
         if (status != Response.Status.OK.getStatusCode())
             return Result.error(getErrorCodeFrom(status));
         else
-            return Result.ok(r.readEntity(new GenericType<>(){}));
+            return Result.ok(r.readEntity(new GenericType<>() {
+            }));
     }
 
     @Override
@@ -101,18 +96,17 @@ public class RestContentClient extends ContentClient {
         if (status != Response.Status.OK.getStatusCode())
             return Result.error(getErrorCodeFrom(status));
         else
-            return Result.ok(r.readEntity(new GenericType<>(){}));
+            return Result.ok(r.readEntity(new GenericType<>() {
+            }));
     }
 
     @Override
     public Result<Post> updatePost(String postId, String userPassword, Post post) {
         Response r = executeOperationPut(target.path(postId).queryParam(RestContent.PASSWORD, userPassword)
-                        .request().accept(MediaType.APPLICATION_JSON)
-                ,Entity.entity(post, MediaType.APPLICATION_JSON));
+                .request().accept(MediaType.APPLICATION_JSON), Entity.entity(post, MediaType.APPLICATION_JSON));
 
         if (r == null)
             return Result.error(Result.ErrorCode.TIMEOUT);
-
 
         int status = r.getStatus();
         if (status != Response.Status.OK.getStatusCode())
@@ -123,10 +117,10 @@ public class RestContentClient extends ContentClient {
 
     @Override
     public Result<Void> deletePost(String postId, String userPassword) {
-        Response r = executeOperationDelete(target.path(postId).queryParam(RestContent.PASSWORD,userPassword)
+        Response r = executeOperationDelete(target.path(postId).queryParam(RestContent.PASSWORD, userPassword)
                 .request().accept(MediaType.APPLICATION_JSON));
 
-        if(r == null)
+        if (r == null)
             return Result.error(Result.ErrorCode.TIMEOUT);
 
         int status = r.getStatus();
@@ -153,10 +147,12 @@ public class RestContentClient extends ContentClient {
 
     private Result<Void> addVotePost(String postId, String userId, String userPassword) {
         Post p = new Post();
-        Response r = executeOperationPost(target.path(postId).path(userId).queryParam(RestContent.PASSWORD,userPassword)
-                .request().accept(MediaType.APPLICATION_JSON), Entity.entity(p, MediaType.APPLICATION_JSON));
+        Response r = executeOperationPost(
+                target.path(postId).path(userId).queryParam(RestContent.PASSWORD, userPassword)
+                        .request().accept(MediaType.APPLICATION_JSON),
+                Entity.entity(p, MediaType.APPLICATION_JSON));
 
-        if(r == null)
+        if (r == null)
             return Result.error(Result.ErrorCode.TIMEOUT);
 
         int status = r.getStatus();
@@ -172,10 +168,11 @@ public class RestContentClient extends ContentClient {
     }
 
     private Result<Void> removeVotePost(String postId, String userId, String userPassword) {
-        Response r = executeOperationDelete(target.path(postId).path(userId).queryParam(RestContent.PASSWORD,userPassword)
-                .request().accept(MediaType.APPLICATION_JSON));
+        Response r = executeOperationDelete(
+                target.path(postId).path(userId).queryParam(RestContent.PASSWORD, userPassword)
+                        .request().accept(MediaType.APPLICATION_JSON));
 
-        if(r == null)
+        if (r == null)
             return Result.error(Result.ErrorCode.TIMEOUT);
 
         int status = r.getStatus();
@@ -187,7 +184,7 @@ public class RestContentClient extends ContentClient {
 
     @Override
     public Result<Integer> getupVotes(String postId) {
-       return getVotes(postId);
+        return getVotes(postId);
     }
 
     @Override

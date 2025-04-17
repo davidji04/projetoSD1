@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import fctreddit.impl.server.grpc.generated_java.UsersGrpc;
-import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf;
 import io.grpc.Channel;
 import io.grpc.LoadBalancerRegistry;
 import io.grpc.ManagedChannelBuilder;
@@ -36,24 +35,24 @@ public class GrpcUsersClient extends UsersClient {
 	static {
 		LoadBalancerRegistry.getDefaultRegistry().register(new PickFirstLoadBalancerProvider());
 	}
-	
+
 	final UsersGrpc.UsersBlockingStub stub;
 
 	public GrpcUsersClient(URI serverURI) {
 		Channel channel = ManagedChannelBuilder.forAddress(serverURI.getHost(), serverURI.getPort()).usePlaintext().build();
-		stub = UsersGrpc.newBlockingStub( channel ).withDeadlineAfter(READ_TIMEOUT, TimeUnit.MILLISECONDS);
+		stub = UsersGrpc.newBlockingStub(channel).withDeadlineAfter(READ_TIMEOUT, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
-	public Result<String> createUser(User user) {		
+	public Result<String> createUser(User user) {
 		try {
 			CreateUserResult res = stub.createUser(CreateUserArgs.newBuilder()
 					.setUser(DataModelAdaptor.User_to_GrpcUser(user))
 					.build());
-			
+
 			return Result.ok(res.getUserId());
 		} catch (StatusRuntimeException sre) {
-			return Result.error( statusToErrorCode(sre.getStatus()));
+			return Result.error(statusToErrorCode(sre.getStatus()));
 		}
 	}
 
@@ -63,10 +62,10 @@ public class GrpcUsersClient extends UsersClient {
 			GetUserResult res = stub.getUser(GetUserArgs.newBuilder()
 					.setUserId(userId).setPassword(password)
 					.build());
-			
+
 			return Result.ok(DataModelAdaptor.GrpcUser_to_User(res.getUser()));
 		} catch (StatusRuntimeException sre) {
-			return Result.error( statusToErrorCode(sre.getStatus()));
+			return Result.error(statusToErrorCode(sre.getStatus()));
 		}
 	}
 
@@ -77,10 +76,10 @@ public class GrpcUsersClient extends UsersClient {
 					.setUserId(userId).setPassword(pwd).setUser(DataModelAdaptor.User_to_GrpcUser(user))
 					.build());
 			return Result.ok(DataModelAdaptor.GrpcUser_to_User(res.getUser()));
-		}catch (StatusRuntimeException sre) {
-			return Result.error( statusToErrorCode(sre.getStatus()));
+		} catch (StatusRuntimeException sre) {
+			return Result.error(statusToErrorCode(sre.getStatus()));
 		}
-    }
+	}
 
 	@Override
 	public Result<User> deleteUser(String userId, String pwd) {
@@ -91,7 +90,7 @@ public class GrpcUsersClient extends UsersClient {
 
 			return Result.ok(DataModelAdaptor.GrpcUser_to_User(res.getUser()));
 		} catch (StatusRuntimeException sre) {
-			return Result.error( statusToErrorCode(sre.getStatus()));
+			return Result.error(statusToErrorCode(sre.getStatus()));
 		}
 
 	}
@@ -102,26 +101,26 @@ public class GrpcUsersClient extends UsersClient {
 			Iterator<GrpcUser> res = stub.searchUsers(SearchUserArgs.newBuilder()
 					.setPattern(pattern)
 					.build());
-			
+
 			List<User> ret = new ArrayList<User>();
-			while(res.hasNext()) {
+			while (res.hasNext()) {
 				ret.add(DataModelAdaptor.GrpcUser_to_User(res.next()));
 			}
 			return Result.ok(ret);
 		} catch (StatusRuntimeException sre) {
-			return Result.error( statusToErrorCode(sre.getStatus()));
+			return Result.error(statusToErrorCode(sre.getStatus()));
 		}
 	}
-	
-	static ErrorCode statusToErrorCode( Status status ) {
-    	return switch( status.getCode() ) {
-    		case OK -> ErrorCode.OK;
-    		case NOT_FOUND -> ErrorCode.NOT_FOUND;
-    		case ALREADY_EXISTS -> ErrorCode.CONFLICT;
-    		case PERMISSION_DENIED -> ErrorCode.FORBIDDEN;
-    		case INVALID_ARGUMENT -> ErrorCode.BAD_REQUEST;
-    		case UNIMPLEMENTED -> ErrorCode.NOT_IMPLEMENTED;
-    		default -> ErrorCode.INTERNAL_ERROR;
-    	};
-    }	
+
+	static ErrorCode statusToErrorCode(Status status) {
+		return switch (status.getCode()) {
+			case OK -> ErrorCode.OK;
+			case NOT_FOUND -> ErrorCode.NOT_FOUND;
+			case ALREADY_EXISTS -> ErrorCode.CONFLICT;
+			case PERMISSION_DENIED -> ErrorCode.FORBIDDEN;
+			case INVALID_ARGUMENT -> ErrorCode.BAD_REQUEST;
+			case UNIMPLEMENTED -> ErrorCode.NOT_IMPLEMENTED;
+			default -> ErrorCode.INTERNAL_ERROR;
+		};
+	}
 }
