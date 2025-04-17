@@ -5,15 +5,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.List;
 
 import fctreddit.api.User;
 import fctreddit.api.java.Image;
 import fctreddit.api.java.Result;
 import fctreddit.api.java.Result.ErrorCode;
-import fctreddit.api.java.Users;
 import fctreddit.clients.java.UsersClient;
 
 public class JavaImage implements Image {
@@ -22,20 +21,24 @@ public class JavaImage implements Image {
 
   private static final String DIR = "images";
 
-  private Users users;
+  private UsersClient users;
 
-  public JavaImage(Users users) {
+  public JavaImage(UsersClient users) {
     File dir = new File(DIR);
     if (!dir.exists()) {
       dir.mkdirs();
     }
+    this.users = users;
   }
 
   @Override
   public Result<String> createImage(String userId, byte[] imageContents, String password) {
     Log.info("createImage : user = " + userId + "; image = " + imageContents + "; pwd = " + password + "\n");
 
-    users.getUser(userId, password);
+    Result<User> r = users.getUser(userId, password);
+
+    if (!r.isOK())
+      return Result.error(r.error());
 
     try {
       String imageId = UUID.randomUUID().toString();
@@ -53,7 +56,7 @@ public class JavaImage implements Image {
     if (userId == null || imageId == null) {
       return Result.error(ErrorCode.BAD_REQUEST);
     }
-    users.searchUsers(userId);
+    Result<List<User>> r = users.searchUsers(userId);
     try {
       String filename = DIR + "/" + imageId;
       Path imagePath = Paths.get(filename);
