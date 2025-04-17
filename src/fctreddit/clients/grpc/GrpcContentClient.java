@@ -2,21 +2,46 @@ package fctreddit.clients.grpc;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import fctreddit.api.Post;
 import fctreddit.api.java.Result;
 import fctreddit.clients.java.ContentClient;
+import fctreddit.impl.grpc.util.DataModelAdaptor;
+import fctreddit.impl.server.grpc.generated_java.UsersGrpc;
+import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.CreateUserArgs;
+import fctreddit.impl.server.grpc.generated_java.UsersProtoBuf.CreateUserResult;
+import io.grpc.Channel;
+import io.grpc.LoadBalancerRegistry;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
+import io.grpc.internal.PickFirstLoadBalancerProvider;
 
 public class GrpcContentClient extends ContentClient {
 
+  static {
+    LoadBalancerRegistry.getDefaultRegistry().register(new PickFirstLoadBalancerProvider());
+  }
+
+  final UsersGrpc.UsersBlockingStub stub;
+
   public GrpcContentClient(URI serverUrl) {
-    // TODO Auto-generated constructor stub
+    Channel channel = ManagedChannelBuilder.forAddress(serverUrl.getHost(), serverUrl.getPort()).usePlaintext().build();
+    stub = UsersGrpc.newBlockingStub(channel).withDeadlineAfter(READ_TIMEOUT, TimeUnit.MILLISECONDS);
+
   }
 
   @Override
   public Result<String> createPost(Post post, String userPassword) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'createPost'");
+    try {
+      CreateContentResult res = stub.createUser(CreateUserArgs.newBuilder()
+          .setUser(DataModelAdaptor.User_to_GrpcUser(user))
+          .build());
+
+      return Result.ok(res.getUserId());
+    } catch (StatusRuntimeException sre) {
+      return Result.error(statusToErrorCode(sre.getStatus()));
+    }
   }
 
   @Override

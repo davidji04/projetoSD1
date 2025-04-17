@@ -38,7 +38,7 @@ public class CreateImageClient {
 
     Result<String> result = client.createImage(userId, imageContent, password);
     if (result.isOK())
-      Log.info("Created iamge:" + result.value() + "\n");
+      Log.info("Created image:" + result.value() + "\n");
     else
       Log.info("Create image failed with error: " + result.error() + "\n");
 

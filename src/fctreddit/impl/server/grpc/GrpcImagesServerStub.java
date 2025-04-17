@@ -12,19 +12,16 @@ import io.grpc.BindableService;
 import io.grpc.ServerServiceDefinition;
 import io.grpc.stub.StreamObserver;
 import fctreddit.api.java.Result;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.UUID;
-
+import fctreddit.clients.java.UsersClient;
 import fctreddit.api.java.Image;
 
 public class GrpcImagesServerStub implements ImageGrpc.AsyncService, BindableService {
 
-  private final String IMAGE_DIR = "../images";
+  final Image impl;
 
-  Image impl = new JavaImage();
+  public GrpcImagesServerStub(UsersClient usersClient) {
+    impl = new JavaImage(usersClient);
+  }
 
   @Override
   public ServerServiceDefinition bindService() {
