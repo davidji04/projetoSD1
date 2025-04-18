@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import fctreddit.Discovery;
 import fctreddit.clients.grpc.GrpcContentClient;
 import fctreddit.clients.grpc.GrpcUsersClient;
+import fctreddit.impl.server.ServerInitializer;
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
 import io.grpc.Server;
@@ -23,18 +24,21 @@ public class ImagesServer {
   private static Logger Log = Logger.getLogger(ImagesServer.class.getName());
 
   public static void main(String[] args) throws Exception {
-    String serverURI = String.format(SERVER_BASE_URI, InetAddress.getLocalHost().getHostAddress(), PORT, GRPC_CTX);
+//    String serverURI = String.format(SERVER_BASE_URI, InetAddress.getLocalHost().getHostAddress(), PORT, GRPC_CTX);
+//
+//    Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR, SERVICE, serverURI);
+//    discovery.start();
+    String ip = InetAddress.getLocalHost().getHostAddress();
+    ServerInitializer s = new ServerInitializer(ip,PORT,SERVICE,SERVER_BASE_URI);
+    s.startServerGrpc();
+    Log.info(String.format("Images gRPC Server ready \n"));
 
-    Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR, SERVICE, serverURI);
-    discovery.start();
-    Log.info(String.format("Images gRPC Server ready @ %s\n", serverURI));
-
-    URI[] usersUris = discovery.knownUrisOf("Users", 1);
-    URI[] contentUris = discovery.knownUrisOf("Content", 1);
-    GrpcImagesServerStub stub = new GrpcImagesServerStub(new GrpcUsersClient(usersUris[0]), new GrpcContentClient(contentUris[0]));
-
-    ServerCredentials cred = InsecureServerCredentials.create();
-    Server server = Grpc.newServerBuilderForPort(PORT, cred).addService(stub).build();
-    server.start().awaitTermination();
+//    URI[] usersUris = discovery.knownUrisOf("Users", 1);
+//    URI[] contentUris = discovery.knownUrisOf("Content", 1);
+//    GrpcImagesServerStub stub = new GrpcImagesServerStub(new GrpcUsersClient(usersUris[0]), new GrpcContentClient(contentUris[0]));
+//
+//    ServerCredentials cred = InsecureServerCredentials.create();
+//    Server server = Grpc.newServerBuilderForPort(PORT, cred).addService(stub).build();
+//    server.start().awaitTermination();
   }
 }

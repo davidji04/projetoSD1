@@ -5,6 +5,7 @@ import fctreddit.ServiceRegistry;
 import fctreddit.clients.rest.RestContentClient;
 import fctreddit.clients.rest.RestImageClient;
 import fctreddit.clients.rest.RestUsersClient;
+import fctreddit.impl.server.ServerInitializer;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -27,41 +28,36 @@ public class ContentServer {
 
     public static void main(String[] args) {
         try {
-            ResourceConfig config = new ResourceConfig();
+//            ResourceConfig config = new ResourceConfig();
+//
+//            String ip = InetAddress.getLocalHost().getHostAddress();
+//            String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
+//
+//            Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR, SERVICE, serverURI);
+//
+//            discovery.start();
+//            ServiceRegistry sr = ServiceRegistry.getInstance();
+//            URI usersURI = sr.getLatestUri("Users");
+//            URI imagesURI = sr.getLatestUri("Images");
+//            RestUsersClient usersClient = null;
+//            RestImageClient imageClient = null;
+//            if(usersURI != null)
+//                   usersClient = new RestUsersClient(usersURI);
+//            if(imagesURI != null)
+//                imageClient = new RestImageClient(imagesURI);
+//            ContentResource contentResource = new ContentResource(usersClient, imageClient);
+//            config.register(contentResource);
+//
+//            JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
 
             String ip = InetAddress.getLocalHost().getHostAddress();
-            String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
-
-            Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR, SERVICE, serverURI);
-
-            discovery.start();
-            ServiceRegistry sr = ServiceRegistry.getInstance();
-            URI usersURI = sr.getLatestUri("Users");
-            URI imagesURI = sr.getLatestUri("Images");
-            RestUsersClient usersClient = null;
-            RestImageClient imageClient = null;
-            if(usersURI != null)
-                   usersClient = new RestUsersClient(usersURI);
-            if(imagesURI != null)
-                imageClient = new RestImageClient(imagesURI);
-            ContentResource contentResource = new ContentResource(usersClient, imageClient);
-            config.register(contentResource);
-
-            JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
-
-            Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));
+            ServerInitializer s = new ServerInitializer(ip,PORT,SERVICE,SERVER_URI_FMT);
+            s.startServerRest();
+            Log.info(String.format("%s Server ready \n", SERVICE));
         } catch (Exception e) {
             Log.severe(e.getMessage());
         }
     }
 
-    protected String serviceName(){
-        return SERVICE;
-    }
-    protected String getServerUriFmt(){
-        return SERVER_URI_FMT;
-    }
-    protected int getPort(){
-        return PORT;
-    }
+
 }
