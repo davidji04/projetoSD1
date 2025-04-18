@@ -11,6 +11,7 @@ import fctreddit.clients.rest.RestContentClient;
 import fctreddit.clients.rest.RestUsersClient;
 import fctreddit.impl.server.ServerInitializer;
 
+import fctreddit.impl.server.ServerInitializer;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -25,10 +26,21 @@ public class ImagesServer {
 
   public static final int PORT = 8082;
   public static final String SERVICE = "Images"; // Changed from "Users" to "Images"
+  public static final int PORT = 8082;
+  public static final String SERVICE = "Users";
   private static final String SERVER_URI_FMT = "http://%s:%s/rest";
 
   public static void main(String[] args) {
     try {
+      // ResourceConfig config = new ResourceConfig();
+      // config.register(ImagesResource.class);
+      //
+      // String ip = InetAddress.getLocalHost().getHostAddress();
+      // String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
+      // JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
+      //
+      // Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR, SERVICE,
+      // serverURI);
       String ip = InetAddress.getLocalHost().getHostAddress();
       String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
 
@@ -58,6 +70,13 @@ public class ImagesServer {
       s.startServerRest();
 
       Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));
+      ServerInitializer s = new ServerInitializer(ip, PORT, SERVICE, SERVER_URI_FMT);
+      s.startServerRest();
+      Log.info(String.format("%s Server ready \n", SERVICE));
+
+      // discovery.start();
+
+      // More code can be executed here...
     } catch (Exception e) {
       Log.severe("Server failed: " + e.getMessage());
       e.printStackTrace();
