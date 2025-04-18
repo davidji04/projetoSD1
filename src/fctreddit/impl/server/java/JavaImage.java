@@ -2,6 +2,9 @@ package fctreddit.impl.server.java;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.URI;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,12 +12,14 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.List;
 
+import fctreddit.Discovery;
 import fctreddit.api.User;
 import fctreddit.api.java.Image;
 import fctreddit.api.java.Result;
 import fctreddit.api.java.Result.ErrorCode;
 import fctreddit.clients.java.ContentClient;
 import fctreddit.clients.java.UsersClient;
+import fctreddit.clients.rest.RestUsersClient;
 
 public class JavaImage implements Image {
 
@@ -26,6 +31,8 @@ public class JavaImage implements Image {
 
   private final ContentClient content;
 
+  private Discovery discovery;
+
   public JavaImage(UsersClient users, ContentClient content) {
     File dir = new File(DIR);
     if (!dir.exists()) {
@@ -33,22 +40,35 @@ public class JavaImage implements Image {
     }
     this.users = users;
     this.content = content;
+    try {
+      discovery = new Discovery(Discovery.DISCOVERY_ADDR, "Image", "http://localhost:8081/rest");
+      discovery.start();
+    } catch (Exception e) {
+      Log.info(e.getLocalizedMessage());
+    }
   }
 
   @Override
   public Result<String> createImage(String userId, byte[] imageContents, String password) {
     Log.info("createImage : user = " + userId + "; image = " + imageContents + "; pwd = " + password + "\n");
 
-    Result<User> r = users.getUser(userId, password);
-
-    if (!r.isOK())
-      return Result.error(r.error());
-
     try {
+      URI[] usersUris = discovery.knownUrisOf("Users", 1);
+      if (usersUris.length == 0) {
+        return Result.error(ErrorCode.INTERNAL_ERROR);
+      }
+
+      RestUsersClient userResult = new RestUsersClient(usersUris[0]);
+      Result<User> r = userResult.getUser(userId, password);
+
+      if (!r.isOK())
+        return Result.error(r.error());
+      User user = r.value();
       String imageId = UUID.randomUUID().toString();
       String filename = DIR + "/" + imageId;
       Files.write(Paths.get(filename), imageContents);
-      return Result.ok(imageId);
+      return Result.ok("http://localhost:8081/rest/images/" + userId + "/" + imageId);
+
     } catch (IOException e) {
       e.printStackTrace();
       return Result.error(ErrorCode.INTERNAL_ERROR);
@@ -100,6 +120,10 @@ public class JavaImage implements Image {
       e.printStackTrace();
       return Result.error(ErrorCode.INTERNAL_ERROR);
     }
+  }
+
+  private boolean isInvalid(String s) {
+    return s == null || s.trim().isEmpty();
   }
 
 }
