@@ -17,7 +17,7 @@ public class UsersServer {
 public static final int PORT = 9000;
 
 	private static final String GRPC_CTX = "/grpc";
-	public static final String SERVICE = "UsersService";
+	public static final String SERVICE = "Users";
 
 	private static final String SERVER_BASE_URI = "grpc://%s:%s%s";
 	
@@ -30,9 +30,9 @@ public static final int PORT = 9000;
 		Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR,SERVICE,serverURI);
 		discovery.start();
 		Log.info(String.format("Users gRPC Server ready @ %s\n", serverURI));
-
-		URI contentUri = ServiceRegistry.getInstance().getLatestUri("Content");
-		URI imageUri = ServiceRegistry.getInstance().getLatestUri("Images");
+		ServiceRegistry sr = ServiceRegistry.getInstance();
+		URI contentUri = sr.getLatestUri("Content");
+		URI imageUri = sr.getLatestUri("Images");
 		GrpcContentClient contentClient = null;
 		if(contentUri != null)
 			contentClient = new GrpcContentClient(contentUri);

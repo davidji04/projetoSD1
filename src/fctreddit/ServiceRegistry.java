@@ -24,7 +24,7 @@ public class ServiceRegistry {
         return latestUris.get(serviceName);
     }
 
-    public static ServiceRegistry getInstance() {
+    synchronized public static ServiceRegistry getInstance() {
         if (instance == null) {
             instance = new ServiceRegistry();
         }

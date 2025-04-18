@@ -1,5 +1,6 @@
 package fctreddit.impl.server.grpc;
 
+import fctreddit.clients.java.ContentClient;
 import fctreddit.impl.server.grpc.generated_java.ImageGrpc;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.CreateImageArgs;
 import fctreddit.impl.server.grpc.generated_java.ImageProtoBuf.CreateImageResult;
@@ -19,8 +20,8 @@ public class GrpcImagesServerStub implements ImageGrpc.AsyncService, BindableSer
 
   final Image impl;
 
-  public GrpcImagesServerStub(UsersClient usersClient) {
-    impl = new JavaImage(usersClient);
+  public GrpcImagesServerStub(UsersClient usersClient, ContentClient contentClient) {
+    impl = new JavaImage(usersClient, contentClient);
   }
 
   @Override

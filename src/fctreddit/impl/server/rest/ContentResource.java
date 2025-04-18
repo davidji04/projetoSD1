@@ -4,6 +4,7 @@ import fctreddit.api.Post;
 import fctreddit.api.java.Content;
 import fctreddit.api.java.Result;
 import fctreddit.api.rest.RestContent;
+import fctreddit.clients.java.ImagesClient;
 import fctreddit.clients.java.UsersClient;
 import fctreddit.clients.rest.RestImageClient;
 import fctreddit.impl.server.java.JavaContent;
@@ -23,7 +24,7 @@ public class ContentResource implements RestContent {
 
     final Content impl;
 
-    public ContentResource(UsersClient usersClient, RestImageClient imageClient) {
+    public ContentResource(UsersClient usersClient, ImagesClient imageClient) {
         impl = new JavaContent(usersClient, imageClient);
     }
 

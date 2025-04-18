@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import fctreddit.api.java.Image;
 import fctreddit.api.java.Result;
 import fctreddit.api.rest.RestImage;
+import fctreddit.clients.java.ContentClient;
 import fctreddit.clients.java.UsersClient;
 import fctreddit.impl.server.java.JavaImage;
 import jakarta.ws.rs.WebApplicationException;
@@ -16,8 +17,8 @@ public class ImagesResource implements RestImage {
 
   final Image impl;
 
-  public ImagesResource(UsersClient users) {
-    impl = new JavaImage(users);
+  public ImagesResource(UsersClient users, ContentClient content) {
+    impl = new JavaImage(users, content);
   }
 
   @Override

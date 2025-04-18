@@ -1,6 +1,8 @@
 package fctreddit.impl.server.rest;
 
 import fctreddit.Discovery;
+import fctreddit.ServiceRegistry;
+import fctreddit.clients.rest.RestContentClient;
 import fctreddit.clients.rest.RestImageClient;
 import fctreddit.clients.rest.RestUsersClient;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
@@ -33,10 +35,16 @@ public class ContentServer {
             Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR, SERVICE, serverURI);
 
             discovery.start();
-            URI[] uris = discovery.knownUrisOf("Users", 1);
-            URI[] imageURIs = discovery.knownUrisOf("Images", 1);
-            ContentResource contentResource = new ContentResource(new RestUsersClient(uris[0]),
-                    new RestImageClient(imageURIs[0]));
+            ServiceRegistry sr = ServiceRegistry.getInstance();
+            URI usersURI = sr.getLatestUri("Users");
+            URI imagesURI = sr.getLatestUri("Images");
+            RestUsersClient usersClient = null;
+            RestImageClient imageClient = null;
+            if(usersURI != null)
+                   usersClient = new RestUsersClient(usersURI);
+            if(imagesURI != null)
+                imageClient = new RestImageClient(imagesURI);
+            ContentResource contentResource = new ContentResource(usersClient, imageClient);
             config.register(contentResource);
 
             JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
@@ -45,5 +53,15 @@ public class ContentServer {
         } catch (Exception e) {
             Log.severe(e.getMessage());
         }
+    }
+
+    protected String serviceName(){
+        return SERVICE;
+    }
+    protected String getServerUriFmt(){
+        return SERVER_URI_FMT;
+    }
+    protected int getPort(){
+        return PORT;
     }
 }
