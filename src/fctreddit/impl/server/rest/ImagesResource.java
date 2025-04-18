@@ -8,7 +8,14 @@ import fctreddit.api.rest.RestImage;
 import fctreddit.clients.java.ContentClient;
 import fctreddit.clients.java.UsersClient;
 import fctreddit.impl.server.java.JavaImage;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response.Status;
 
 public class ImagesResource implements RestImage {
@@ -21,6 +28,8 @@ public class ImagesResource implements RestImage {
     impl = new JavaImage(users, content);
   }
 
+  @POST
+  @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Override
   public String createImage(String userId, byte[] imageContents, String password) {
     Log.info("createImage : user = " + userId + "; image = " + imageContents + "; pwd = " + password + "\n");
@@ -32,6 +41,9 @@ public class ImagesResource implements RestImage {
     return res.value();
   }
 
+  @GET
+  @Path("/{imageId}")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Override
   public byte[] getImage(String userId, String imageId) {
     Log.info("getImage : user = " + userId + "; image = " + imageId + "\n");
@@ -43,6 +55,8 @@ public class ImagesResource implements RestImage {
     return res.value();
   }
 
+  @DELETE
+  @Path("/{imageId}")
   @Override
   public void deleteImage(String userId, String imageId, String password) {
     Log.info("deleteImage : user = " + userId + "; image = " + imageId + "; pwd = " + password + "\n");
