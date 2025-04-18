@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.logging.Logger;
 
 import fctreddit.Discovery;
+import fctreddit.ServiceRegistry;
 import fctreddit.clients.rest.RestContentClient;
 import fctreddit.clients.rest.RestImageClient;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
@@ -34,9 +35,16 @@ public class UsersServer {
 
 
 		discovery.start();
-		URI[] contentUris = discovery.knownUrisOf("Content",1);
-		URI[] imageURIs = discovery.knownUrisOf("Images",1);
-		UsersResource resource = new UsersResource(new RestContentClient(contentUris[0]), new RestImageClient(imageURIs[0]));
+
+		URI contentUri = ServiceRegistry.getInstance().getLatestUri("Content");
+		URI imageUri = ServiceRegistry.getInstance().getLatestUri("Images");
+		RestContentClient contentClient = null;
+		RestImageClient imageClient = null;
+		if (contentUri != null)
+			contentClient = new RestContentClient(contentUri);
+		if (imageUri != null)
+			imageClient = new RestImageClient(imageUri);
+		UsersResource resource = new UsersResource(contentClient, imageClient);
 ;		config.register(resource);
 
 		JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);

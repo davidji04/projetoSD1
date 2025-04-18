@@ -48,7 +48,7 @@ public class Discovery {
 	// Allowed IP Multicast range: 224.0.0.1 - 239.255.255.255
 	public static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
 	static final int DISCOVERY_ANNOUNCE_PERIOD = 1000;
-	static final int DISCOVERY_RETRY_TIMEOUT = 5000;
+	static final int DISCOVERY_RETRY_TIMEOUT = 2000;
 	static final int MAX_DATAGRAM_SIZE = 65536;
 	static final int MAX_SIZE = 1000;
 
@@ -140,6 +140,7 @@ public class Discovery {
 						String name = msgElems[0];
 						URI uri = URI.create(msgElems[1]);
 						discoveredUris.computeIfAbsent(name, key -> new ArrayList<>()).add(uri);
+						ServiceRegistry.getInstance().addService(serviceName, uri);
 					}
 				} catch (IOException e) {
 					// do nothing
@@ -158,6 +159,7 @@ public class Discovery {
 		}
 	}
 
+
 	/**
 	 * Returns the known services.
 	 * 
@@ -169,6 +171,7 @@ public class Discovery {
 	 */
 	public URI[] knownUrisOf(String serviceName, int minReplies) {
 		List<URI> result = new ArrayList<>();
+
 		while (true) {
 			result = discoveredUris.get(serviceName);
 			if (result != null && result.size() >= minReplies)
@@ -181,8 +184,9 @@ public class Discovery {
 				break;
 			}
 		}
+		return result == null ? new URI[0] : result.toArray(new URI[0]);
 
-		return result.toArray(new URI[0]);
+//		return result.toArray(new URI[0]);
 	}
 	/*
 	 * // Main just for testing purposes
