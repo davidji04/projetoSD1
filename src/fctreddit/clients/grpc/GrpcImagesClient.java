@@ -54,7 +54,7 @@ public class GrpcImagesClient extends ImagesClient {
         GetImageResult res = resIt.next();
         return Result.ok(res.getData().toByteArray());
       } else {
-        return Result.error(ErrorCode.NOT_FOUND); // ou outro erro apropriado
+        return Result.error(ErrorCode.NOT_FOUND);
       }
     } catch (StatusRuntimeException sre) {
       return Result.error(statusToErrorCode(sre.getStatus()));
