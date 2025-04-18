@@ -17,7 +17,7 @@ public class UsersServer {
 public static final int PORT = 9000;
 
 	private static final String GRPC_CTX = "/grpc";
-	public static final String SERVICE = "UsersService";
+	public static final String SERVICE = "Users";
 
 	private static final String SERVER_BASE_URI = "grpc://%s:%s%s";
 	

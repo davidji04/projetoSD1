@@ -13,6 +13,7 @@ import fctreddit.api.User;
 import fctreddit.api.java.Image;
 import fctreddit.api.java.Result;
 import fctreddit.api.java.Result.ErrorCode;
+import fctreddit.clients.java.ContentClient;
 import fctreddit.clients.java.UsersClient;
 
 public class JavaImage implements Image {
@@ -21,14 +22,17 @@ public class JavaImage implements Image {
 
   private static final String DIR = "images";
 
-  private UsersClient users;
+  private final UsersClient users;
 
-  public JavaImage(UsersClient users) {
+  private final ContentClient content;
+
+  public JavaImage(UsersClient users, ContentClient content) {
     File dir = new File(DIR);
     if (!dir.exists()) {
       dir.mkdirs();
     }
     this.users = users;
+    this.content = content;
   }
 
   @Override

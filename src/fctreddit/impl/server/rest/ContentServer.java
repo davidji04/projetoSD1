@@ -54,4 +54,14 @@ public class ContentServer {
             Log.severe(e.getMessage());
         }
     }
+
+    protected String serviceName(){
+        return SERVICE;
+    }
+    protected String getServerUriFmt(){
+        return SERVER_URI_FMT;
+    }
+    protected int getPort(){
+        return PORT;
+    }
 }
