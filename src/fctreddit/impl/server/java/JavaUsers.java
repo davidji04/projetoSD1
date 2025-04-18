@@ -17,9 +17,9 @@ public class JavaUsers implements Users {
 
 	private Hibernate hibernate;
 
-	private ContentClient contentClient;
+	private final ContentClient contentClient;
 
-	private ImagesClient imageClient;
+	private final ImagesClient imageClient;
 
 	public JavaUsers(ContentClient contentClient, ImagesClient imageClient) {
 		hibernate = Hibernate.getInstance();
@@ -134,7 +134,7 @@ public class JavaUsers implements Users {
 				return Result.error(res.error());
 			u = res.value();
 
-			if (u.getAvatarUrl() != null) {
+			if (u.getAvatarUrl() != null && imageClient!=null) {
 				String imageId = u.getAvatarUrl().substring(u.getAvatarUrl().lastIndexOf("/") + 1);
 				imageClient.deleteImage(u.getUserId(), imageId, password);
 			}

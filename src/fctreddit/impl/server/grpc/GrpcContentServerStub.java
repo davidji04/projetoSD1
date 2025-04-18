@@ -38,137 +38,137 @@ public class GrpcContentServerStub implements ContentGrpc.AsyncService, Bindable
     return ContentGrpc.bindService(this);
   }
 
-  @Override
-  public void createPost(CreatePostArgs request, StreamObserver<CreatePostResult> responseObserver) {
-    Result<String> res = impl.createPost(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void getPosts(GetPostsArgs request, StreamObserver<GetPostsResult> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void getPost(GetPostArgs request, StreamObserver<GrpcPost> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void getPostAnswers(GetPostAnswersArgs request, StreamObserver<GetPostsResult> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void updatePost(UpdatePostArgs request, StreamObserver<GrpcPost> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void deletePost(DeletePostArgs request, StreamObserver<EmptyMessage> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void upVotePost(ChangeVoteArgs request, StreamObserver<EmptyMessage> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void removeUpVotePost(ChangeVoteArgs request, StreamObserver<EmptyMessage> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void downVotePost(ChangeVoteArgs request, StreamObserver<EmptyMessage> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void removeDownVotePost(ChangeVoteArgs request, StreamObserver<EmptyMessage> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void getupVotes(GetPostArgs request, StreamObserver<VoteCountResult> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
-
-  @Override
-  public void getDownVotes(GetPostArgs request, StreamObserver<VoteCountResult> responseObserver) {
-    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
-    if (!res.isOK())
-      responseObserver.onError(errorCodeToStatus(res.error()));
-    else {
-      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
-      responseObserver.onCompleted();
-    }
-  }
+//  @Override
+//  public void createPost(CreatePostArgs request, StreamObserver<CreatePostResult> responseObserver) {
+//    Result<String> res = impl.createPost(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void getPosts(GetPostsArgs request, StreamObserver<GetPostsResult> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void getPost(GetPostArgs request, StreamObserver<GrpcPost> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void getPostAnswers(GetPostAnswersArgs request, StreamObserver<GetPostsResult> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void updatePost(UpdatePostArgs request, StreamObserver<GrpcPost> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void deletePost(DeletePostArgs request, StreamObserver<EmptyMessage> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void upVotePost(ChangeVoteArgs request, StreamObserver<EmptyMessage> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void removeUpVotePost(ChangeVoteArgs request, StreamObserver<EmptyMessage> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void downVotePost(ChangeVoteArgs request, StreamObserver<EmptyMessage> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void removeDownVotePost(ChangeVoteArgs request, StreamObserver<EmptyMessage> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void getupVotes(GetPostArgs request, StreamObserver<VoteCountResult> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
+//
+//  @Override
+//  public void getDownVotes(GetPostArgs request, StreamObserver<VoteCountResult> responseObserver) {
+//    Result<String> res = impl.createUser(DataModelAdaptor.GrpcUser_to_User(request.getUser()));
+//    if (!res.isOK())
+//      responseObserver.onError(errorCodeToStatus(res.error()));
+//    else {
+//      responseObserver.onNext(CreateUserResult.newBuilder().setUserId(res.value()).build());
+//      responseObserver.onCompleted();
+//    }
+//  }
 
   protected static Throwable errorCodeToStatus(Result.ErrorCode error) {
     var status = switch (error) {

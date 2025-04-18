@@ -33,15 +33,18 @@ public class GrpcContentClient extends ContentClient {
 
   @Override
   public Result<String> createPost(Post post, String userPassword) {
-    try {
-      CreateContentResult res = stub.createUser(CreateUserArgs.newBuilder()
-          .setUser(DataModelAdaptor.User_to_GrpcUser(user))
-          .build());
+//    try {
+//      CreateContentResult res = stub.createUser(CreateUserArgs.newBuilder()
+//          .setUser(DataModelAdaptor.User_to_GrpcUser(user))
+//          .build());
+//
+//      return Result.ok(res.getUserId());
+//    } catch (StatusRuntimeException sre) {
+//      return Result.error(statusToErrorCode(sre.getStatus()));
+//    }
+//    return Result.error(statusToErrorCode(sre.getStatus()));
+    throw new UnsupportedOperationException("Unimplemented method 'getPosts'");
 
-      return Result.ok(res.getUserId());
-    } catch (StatusRuntimeException sre) {
-      return Result.error(statusToErrorCode(sre.getStatus()));
-    }
   }
 
   @Override
