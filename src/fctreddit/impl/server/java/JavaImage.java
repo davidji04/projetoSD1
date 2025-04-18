@@ -19,7 +19,7 @@ public class JavaImage implements Image {
 
   private static Logger Log = Logger.getLogger(JavaUsers.class.getName());
 
-  private static final String DIR = "images";
+  private static final String DIR = "../images";
 
   private UsersClient users;
 
