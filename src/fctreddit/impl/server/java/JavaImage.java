@@ -61,12 +61,14 @@ public class JavaImage implements Image {
       else
         this.content = new GrpcContentClient(contentUri);
     }
+    Log.info("Servers: " + " Users-> " + this.users + "  Content-> " + this.content+ "\n");
 
   }
 
   @Override
   public Result<String> createImage(String userId, byte[] imageContents, String password) {
     Log.info("createImage : user = " + userId + "; image = " + imageContents + "; pwd = " + password + "\n");
+
     if (users != null) {
       Result<User> r = users.getUser(userId, password);
       if (!r.isOK())

@@ -27,7 +27,7 @@ public class ImagesResource implements RestImage {
   public String createImage(String userId,
       byte[] imageContents, String password) {
 
-    Log.info(() -> String.format("createImage - user: %s, data size: %d", userId, imageContents.length));
+    Log.info(() -> String.format("createImage - user: %s, data size: %d\n", userId, imageContents.length));
 
     Result<String> res = impl.createImage(userId, imageContents, password);
     if (!res.isOK()) {
@@ -42,7 +42,7 @@ public class ImagesResource implements RestImage {
   @Override
   public byte[] getImage(String userId, String imageId) {
 
-    Log.info(() -> String.format("getImage - user: %s, imageId: %s", userId, imageId));
+    Log.info(() -> String.format("getImage - user: %s, imageId: %s\n", userId, imageId));
 
     Result<byte[]> res = impl.getImage(userId, imageId);
     if (!res.isOK()) {
@@ -54,7 +54,7 @@ public class ImagesResource implements RestImage {
   @Override
   public void deleteImage(String userId, String imageId, String password) {
 
-    Log.info(() -> String.format("deleteImage - user: %s, imageId: %s", userId, imageId));
+    Log.info(() -> String.format("deleteImage - user: %s, imageId: %s\n", userId, imageId));
 
     Result<Void> res = impl.deleteImage(userId, imageId, password);
     if (!res.isOK()) {

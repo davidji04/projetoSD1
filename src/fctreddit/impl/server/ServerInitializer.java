@@ -64,8 +64,7 @@ public class ServerInitializer {
             String serverURI = String.format(format, ip, port);
             Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR,name,serverURI);
             discovery.start();
-            setRestResource(config);
-            JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
+            setRestResource(config, serverURI);
         } catch (Exception e) {
             Log.severe(e.getMessage());
         }
@@ -109,12 +108,14 @@ public class ServerInitializer {
 
 
 
-    private void setRestResource(ResourceConfig config) {
+    private void setRestResource(ResourceConfig config, String serverURI) {
         switch (name) {
             case USERS -> config.register(UsersResource.class);
             case IMAGES -> config.register(ImagesResource.class);
             case CONTENT -> config.register(ContentResource.class);
         }
+        JdkHttpServerFactory.createHttpServer( URI.create(serverURI), config);
+
     }
 
     private Server setGrpcResource() {
