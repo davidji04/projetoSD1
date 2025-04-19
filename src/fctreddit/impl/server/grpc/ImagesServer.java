@@ -14,7 +14,7 @@ import io.grpc.Server;
 import io.grpc.ServerCredentials;
 
 public class ImagesServer {
-  public static final int PORT = 8078;
+  public static final int PORT = 8000;
 
   public static final String SERVICE = "Images";
 

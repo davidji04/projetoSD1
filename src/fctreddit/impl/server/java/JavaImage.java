@@ -31,9 +31,6 @@ public class JavaImage implements Image {
 
   private String IP_ADRESS;
 
-  private UsersClient users;
-
-  private ContentClient content;
 
   public JavaImage() {
     File dir = new File(DIR);
@@ -47,21 +44,7 @@ public class JavaImage implements Image {
       e.printStackTrace();
     }
 
-    URI userUri = ServiceRegistry.getInstance().getLatestUri("Users");
-    URI contentUri = ServiceRegistry.getInstance().getLatestUri("Content");
-    if (userUri != null) {
-      if (userUri.toString().contains("rest"))
-        this.users = new RestUsersClient(userUri);
-      else
-        this.users = new GrpcUsersClient(userUri);
-    }
-    if (contentUri != null) {
-      if (contentUri.toString().contains("rest"))
-        this.content = new RestContentClient(contentUri);
-      else
-        this.content = new GrpcContentClient(contentUri);
-    }
-    Log.info("Servers: " + " Users-> " + this.users + "  Content-> " + this.content+ "\n");
+
 
   }
 
@@ -69,8 +52,11 @@ public class JavaImage implements Image {
   public Result<String> createImage(String userId, byte[] imageContents, String password) {
     Log.info("createImage : user = " + userId + "; image = " + imageContents + "; pwd = " + password + "\n");
 
+    UsersClient users = ServiceRegistry.getInstance().getUsersClient();
+
     if (users != null) {
       Result<User> r = users.getUser(userId, password);
+      Log.info("Error " + r.isOK());
       if (!r.isOK())
         return Result.error(r.error());
     }
@@ -123,6 +109,8 @@ public class JavaImage implements Image {
       if (!Files.exists(imagePath)) {
         return Result.error(ErrorCode.NOT_FOUND);
       }
+      UsersClient users = ServiceRegistry.getInstance().getUsersClient();
+
       users.getUser(userId, password);
       Files.delete(imagePath);
       return Result.ok(null);

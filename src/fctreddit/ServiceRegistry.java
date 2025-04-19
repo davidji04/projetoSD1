@@ -1,5 +1,15 @@
 package fctreddit;
 
+import fctreddit.clients.grpc.GrpcContentClient;
+import fctreddit.clients.grpc.GrpcImagesClient;
+import fctreddit.clients.grpc.GrpcUsersClient;
+import fctreddit.clients.java.ContentClient;
+import fctreddit.clients.java.ImagesClient;
+import fctreddit.clients.java.UsersClient;
+import fctreddit.clients.rest.RestContentClient;
+import fctreddit.clients.rest.RestImageClient;
+import fctreddit.clients.rest.RestUsersClient;
+
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,7 +23,7 @@ public class ServiceRegistry {
 
     private final Map<String, URI> latestUris;
 
-    static final int DISCOVERY_RETRY_TIMEOUT = 1000;
+    static final int DISCOVERY_RETRY_TIMEOUT = 200;
 
 
     private ServiceRegistry() {
@@ -26,26 +36,40 @@ public class ServiceRegistry {
     }
 
     public URI getLatestUri(String serviceName) {
-        int retries = 0;
-        int maxRetries = 3;
-        URI latestUri = null;
-
-        while (retries < maxRetries) {
-            latestUri = latestUris.get(serviceName);
-            if (latestUri != null) {
-                break;
-            }
-            try {
-                Thread.sleep(DISCOVERY_RETRY_TIMEOUT);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
-            retries++;
+        return latestUris.get(serviceName);
+    }
+    public UsersClient getUsersClient() {
+        URI userUri = ServiceRegistry.getInstance().getLatestUri("Users");
+        if (userUri != null) {
+            if (userUri.toString().endsWith("rest"))
+                return new RestUsersClient(userUri);
+            else
+                return new GrpcUsersClient(userUri);
         }
-        return latestUri;
+        return null;
     }
 
+    public ContentClient getContentClient() {
+        URI contentUri = ServiceRegistry.getInstance().getLatestUri("Content");
+        if (contentUri != null) {
+            if(contentUri.toString().endsWith("rest"))
+                return new RestContentClient(contentUri);
+            else
+                return new GrpcContentClient(contentUri);
+        }
+        return null;
+    }
+
+    public ImagesClient getImagesClient() {
+        URI imagesUri = ServiceRegistry.getInstance().getLatestUri("Images");
+        if (imagesUri != null) {
+            if(imagesUri.toString().endsWith("rest"))
+                return new RestImageClient(imagesUri);
+            else
+                return new GrpcImagesClient(imagesUri);
+        }
+        return null;
+    }
     synchronized public static ServiceRegistry getInstance() {
         if (instance == null) {
             instance = new ServiceRegistry();
