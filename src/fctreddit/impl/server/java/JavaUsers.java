@@ -1,14 +1,22 @@
 package fctreddit.impl.server.java;
 
+import java.net.URI;
 import java.util.List;
 import java.util.logging.Logger;
 
+import fctreddit.ServiceRegistry;
 import fctreddit.api.User;
 import fctreddit.api.java.Result;
 import fctreddit.api.java.Result.ErrorCode;
 import fctreddit.api.java.Users;
+import fctreddit.clients.grpc.GrpcContentClient;
+import fctreddit.clients.grpc.GrpcImagesClient;
+import fctreddit.clients.grpc.GrpcUsersClient;
 import fctreddit.clients.java.ContentClient;
 import fctreddit.clients.java.ImagesClient;
+import fctreddit.clients.rest.RestContentClient;
+import fctreddit.clients.rest.RestImageClient;
+import fctreddit.clients.rest.RestUsersClient;
 import fctreddit.impl.server.persistence.Hibernate;
 
 public class JavaUsers implements Users {
@@ -17,14 +25,26 @@ public class JavaUsers implements Users {
 
 	private Hibernate hibernate;
 
-	private final ContentClient contentClient;
+	private ContentClient contentClient;
 
-	private final ImagesClient imageClient;
+	private ImagesClient imageClient;
 
-	public JavaUsers(ContentClient contentClient, ImagesClient imageClient) {
+	public JavaUsers() {
 		hibernate = Hibernate.getInstance();
-		this.contentClient = contentClient;
-		this.imageClient = imageClient;
+		URI imageUri = ServiceRegistry.getInstance().getLatestUri("Images");
+		URI contentUri = ServiceRegistry.getInstance().getLatestUri("Content");
+		if(imageUri != null) {
+			if (imageUri.toString().contains("rest"))
+				this.imageClient = new RestImageClient(imageUri);
+			else
+				this.imageClient = new GrpcImagesClient(imageUri);
+		}
+		if(contentUri != null) {
+			if (contentUri.toString().contains("rest"))
+				this.contentClient = new RestContentClient(contentUri);
+			else
+				this.contentClient = new GrpcContentClient(contentUri);
+		}
 	}
 
 	@Override

@@ -140,7 +140,7 @@ public class Discovery {
 						String name = msgElems[0];
 						URI uri = URI.create(msgElems[1]);
 						discoveredUris.computeIfAbsent(name, key -> new ArrayList<>()).add(uri);
-						ServiceRegistry.getInstance().addService(serviceName, uri);
+						ServiceRegistry.getInstance().addService(name, uri);
 					}
 				} catch (IOException e) {
 					// do nothing

@@ -28,28 +28,12 @@ public class ContentServer {
 
   public static void main(String[] args) throws Exception {
 
-//    String serverURI = String.format(SERVER_BASE_URI, InetAddress.getLocalHost().getHostAddress(), PORT, GRPC_CTX);
-//    Discovery discovery = new Discovery(Discovery.DISCOVERY_ADDR, SERVICE, serverURI);
-//    discovery.start();
     String ip = InetAddress.getLocalHost().getHostAddress();
     ServerInitializer s = new ServerInitializer(ip,PORT,SERVICE,SERVER_BASE_URI);
     s.startServerGrpc();
     Log.info(String.format("Content gRPC Server ready \n"));
 
-//    ServiceRegistry sr = ServiceRegistry.getInstance();
-//    URI usersUri = sr.getLatestUri("Users");
-//    URI imageUri = sr.getLatestUri("Images");
-//    GrpcUsersClient usersClient = null;
-//    if(usersUri != null)
-//      usersClient = new GrpcUsersClient(usersUri);
-//    GrpcImagesClient imageClient = null;
-//    if(imageUri != null)
-//      imageClient = new GrpcImagesClient(imageUri);
-//    GrpcContentServerStub stub = new GrpcContentServerStub( imageClient, usersClient);
-//    ServerCredentials cred = InsecureServerCredentials.create();
-//    Server server = Grpc.newServerBuilderForPort(PORT, cred).addService(stub).build();
 
-//    server.start().awaitTermination();
   }
 
 }

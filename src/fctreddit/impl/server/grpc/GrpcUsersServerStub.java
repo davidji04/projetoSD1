@@ -28,8 +28,8 @@ public class GrpcUsersServerStub implements UsersGrpc.AsyncService, BindableServ
 
 	final Users impl;
 
-	public GrpcUsersServerStub(ContentClient contentClient, ImagesClient imagesClient) {
-		impl = new JavaUsers(contentClient, imagesClient);
+	public GrpcUsersServerStub() {
+		impl = new JavaUsers();
 	}
 
 	@Override

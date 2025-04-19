@@ -82,47 +82,18 @@ public class ServerInitializer {
             Log.severe(e.getMessage());
         }
     }
-    private void initializeRestUsers(ResourceConfig config) {
-        URI contentUri = sr.getLatestUri(CONTENT);
-        URI imageUri = sr.getLatestUri(IMAGES);
-        RestContentClient contentClient = null;
-        RestImageClient imageClient = null;
-        if (contentUri != null)
-            contentClient = new RestContentClient(contentUri);
-        if (imageUri != null)
-            imageClient = new RestImageClient(imageUri);
 
-        config.register(new UsersResource(contentClient, imageClient));
-
-
-        }
 
 
     private Server initializeGrpcUsers() {
-        URI contentUri = sr.getLatestUri(CONTENT);
-        URI imageUri = sr.getLatestUri(IMAGES);
-        GrpcContentClient grpcContentClient = null;
-        GrpcImagesClient grpcImagesClient = null;
-        if (contentUri != null)
-            grpcContentClient = new GrpcContentClient(contentUri);
-        if (imageUri != null)
-            grpcImagesClient = new GrpcImagesClient(imageUri);
-        GrpcUsersServerStub stub = new GrpcUsersServerStub( grpcContentClient, grpcImagesClient);
+        GrpcUsersServerStub stub = new GrpcUsersServerStub();
         ServerCredentials cred = InsecureServerCredentials.create();
         Server server = Grpc.newServerBuilderForPort(port, cred) .addService(stub).build();
         return server;
     }
 
     private Server initializeGrpcImages() {
-        URI contentUri = sr.getLatestUri(CONTENT);
-        URI usersUri = sr.getLatestUri(USERS);
-        GrpcContentClient contentClient = null;
-        GrpcUsersClient usersClient = null;
-        if (contentUri != null)
-            contentClient = new GrpcContentClient(contentUri);
-        if (usersUri != null)
-            usersClient = new GrpcUsersClient(usersUri);
-        GrpcImagesServerStub stub = new GrpcImagesServerStub(usersClient, contentClient);
+        GrpcImagesServerStub stub = new GrpcImagesServerStub();
         ServerCredentials cred = InsecureServerCredentials.create();
         Server server = Grpc.newServerBuilderForPort(port, cred) .addService(stub).build();
         return server;
@@ -130,50 +101,19 @@ public class ServerInitializer {
     }
 
     private Server initializeGrpcContent() {
-        URI usersUri = sr.getLatestUri(USERS);
-        URI imageUri = sr.getLatestUri(IMAGES);
-        GrpcUsersClient usersClient = null;
-        GrpcImagesClient imageClient = null;
-        if(usersUri != null)
-            usersClient = new GrpcUsersClient(usersUri);
-        if(imageUri != null)
-            imageClient = new GrpcImagesClient(imageUri);
-        GrpcContentServerStub stub = new GrpcContentServerStub(imageClient, usersClient);
+        GrpcContentServerStub stub = new GrpcContentServerStub();
         ServerCredentials cred = InsecureServerCredentials.create();
         Server server = Grpc.newServerBuilderForPort(port, cred) .addService(stub).build();
         return server;
     }
 
-    private void initializeRestImages(ResourceConfig config) {
-        URI contentUri = sr.getLatestUri(CONTENT);
-        URI usersUri = sr.getLatestUri(USERS);
-        RestContentClient contentClient = null;
-        RestUsersClient usersClient = null;
-        if (contentUri != null)
-            contentClient = new RestContentClient(contentUri);
-        if (usersUri != null)
-            usersClient = new RestUsersClient(usersUri);
-        config.register(new ImagesResource(usersClient,contentClient));
-    }
 
-    private void initializeRestContents(ResourceConfig config) {
-        URI usersUri = sr.getLatestUri(USERS);
-        URI imageUri = sr.getLatestUri(IMAGES);
-        RestUsersClient usersClient = null;
-        RestImageClient imageClient = null;
-        if(usersUri != null)
-            usersClient = new RestUsersClient(usersUri);
-        if(imageUri != null)
-            imageClient = new RestImageClient(imageUri);
-        config.register(new ContentResource(usersClient,imageClient));
-
-    }
 
     private void setRestResource(ResourceConfig config) {
         switch (name) {
-            case USERS -> initializeRestUsers(config);
-            case IMAGES -> initializeRestImages(config);
-            case CONTENT -> initializeRestContents(config);
+            case USERS -> config.register(UsersResource.class);
+            case IMAGES -> config.register(ImagesResource.class);
+            case CONTENT -> config.register(ContentResource.class);
         }
     }
 

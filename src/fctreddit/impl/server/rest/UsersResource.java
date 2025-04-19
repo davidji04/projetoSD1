@@ -19,8 +19,8 @@ public class UsersResource implements RestUsers {
 
 	final Users impl;
 
-	public UsersResource(ContentClient contentClient, ImagesClient imageClient) {
-		impl = new JavaUsers(contentClient, imageClient);
+	public UsersResource() {
+		impl = new JavaUsers();
 	}
 
 	@Override

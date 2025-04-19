@@ -20,8 +20,8 @@ public class GrpcImagesServerStub implements ImageGrpc.AsyncService, BindableSer
 
   final Image impl;
 
-  public GrpcImagesServerStub(UsersClient usersClient, ContentClient contentClient) {
-    impl = new JavaImage(usersClient, contentClient);
+  public GrpcImagesServerStub() {
+    impl = new JavaImage();
   }
 
   @Override

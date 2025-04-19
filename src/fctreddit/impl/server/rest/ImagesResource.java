@@ -19,8 +19,8 @@ public class ImagesResource implements RestImage {
 
   final Image impl;
 
-  public ImagesResource(UsersClient users, ContentClient content) {
-    impl = new JavaImage(users, content);
+  public ImagesResource() {
+    impl = new JavaImage();
   }
 
   @Override

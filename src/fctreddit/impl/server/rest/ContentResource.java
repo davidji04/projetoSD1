@@ -24,8 +24,8 @@ public class ContentResource implements RestContent {
 
     final Content impl;
 
-    public ContentResource(UsersClient usersClient, ImagesClient imageClient) {
-        impl = new JavaContent(usersClient, imageClient);
+    public ContentResource() {
+        impl = new JavaContent();
     }
 
     private void checkResult(Result result) {

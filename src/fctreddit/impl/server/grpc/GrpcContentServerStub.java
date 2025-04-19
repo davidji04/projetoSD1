@@ -29,8 +29,8 @@ public class GrpcContentServerStub implements ContentGrpc.AsyncService, Bindable
 
   final Content impl;
 
-  public GrpcContentServerStub(ImagesClient imagesClient, UsersClient userClient) {
-    impl = new JavaContent(userClient, imagesClient);
+  public GrpcContentServerStub() {
+    impl = new JavaContent();
   }
 
   @Override
