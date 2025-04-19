@@ -100,7 +100,7 @@ public class Discovery {
 		// periodic announcement to the multicast address.
 		if (this.serviceName != null && this.serviceURI != null) {
 
-			Log.info(String.format("Starting Discovery announcements on: %s for: %s -> %s", addr, serviceName,
+			Log.info(String.format("Starting Discovery announcements on: %s for: %s -> %s\n", addr, serviceName,
 					serviceURI));
 
 			byte[] announceBytes = String.format("%s%s%s", serviceName, DELIMITER, serviceURI).getBytes();

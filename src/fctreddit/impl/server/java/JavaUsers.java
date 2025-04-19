@@ -25,26 +25,12 @@ public class JavaUsers implements Users {
 
 	private Hibernate hibernate;
 
-	private ContentClient contentClient;
 
-	private ImagesClient imageClient;
 
 	public JavaUsers() {
 		hibernate = Hibernate.getInstance();
-		URI imageUri = ServiceRegistry.getInstance().getLatestUri("Images");
-		URI contentUri = ServiceRegistry.getInstance().getLatestUri("Content");
-		if(imageUri != null) {
-			if (imageUri.toString().contains("rest"))
-				this.imageClient = new RestImageClient(imageUri);
-			else
-				this.imageClient = new GrpcImagesClient(imageUri);
-		}
-		if(contentUri != null) {
-			if (contentUri.toString().contains("rest"))
-				this.contentClient = new RestContentClient(contentUri);
-			else
-				this.contentClient = new GrpcContentClient(contentUri);
-		}
+
+
 	}
 
 	@Override
@@ -154,9 +140,10 @@ public class JavaUsers implements Users {
 				return Result.error(res.error());
 			u = res.value();
 
-			if (u.getAvatarUrl() != null && imageClient!=null) {
+			ImagesClient imagesClient = ServiceRegistry.getInstance().getImagesClient();
+			if (u.getAvatarUrl() != null && imagesClient!=null) {
 				String imageId = u.getAvatarUrl().substring(u.getAvatarUrl().lastIndexOf("/") + 1);
-				imageClient.deleteImage(u.getUserId(), imageId, password);
+				imagesClient.deleteImage(u.getUserId(), imageId, password);
 			}
 			hibernate.delete(u);
 		} catch (Exception e) {

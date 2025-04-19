@@ -20,7 +20,7 @@ public class ContentServer {
   public static final int PORT = 8079;
 
   private static final String GRPC_CTX = "/grpc";
-  public static final String SERVICE = "ContentService";
+  public static final String SERVICE = "Content";
 
   private static final String SERVER_BASE_URI = "grpc://%s:%s%s";
 

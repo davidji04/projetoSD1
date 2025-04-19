@@ -16,7 +16,6 @@ import io.grpc.ServerCredentials;
 public class ImagesServer {
   public static final int PORT = 8000;
 
-  private static final String GRPC_CTX = "/grpc";
   public static final String SERVICE = "Images";
 
   private static final String SERVER_BASE_URI = "grpc://%s:%s%s";
