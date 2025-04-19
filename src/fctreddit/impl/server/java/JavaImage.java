@@ -2,13 +2,14 @@ package fctreddit.impl.server.java;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.List;
 
 import fctreddit.ServiceRegistry;
 import fctreddit.api.User;
@@ -26,7 +27,9 @@ public class JavaImage implements Image {
 
   private static Logger Log = Logger.getLogger(JavaUsers.class.getName());
 
-  private static final String DIR = "../images";
+  private static final String DIR = "image";
+
+  private String IP_ADRESS;
 
   private UsersClient users;
 
@@ -37,44 +40,48 @@ public class JavaImage implements Image {
     if (!dir.exists()) {
       dir.mkdirs();
     }
+
+    try {
+      IP_ADRESS = InetAddress.getLocalHost().getHostAddress();
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+    }
+
     URI userUri = ServiceRegistry.getInstance().getLatestUri("Users");
     URI contentUri = ServiceRegistry.getInstance().getLatestUri("Content");
-    if(userUri != null) {
+    if (userUri != null) {
       if (userUri.toString().contains("rest"))
         this.users = new RestUsersClient(userUri);
       else
         this.users = new GrpcUsersClient(userUri);
     }
-    if(contentUri != null) {
-      if(contentUri.toString().contains("rest"))
+    if (contentUri != null) {
+      if (contentUri.toString().contains("rest"))
         this.content = new RestContentClient(contentUri);
       else
         this.content = new GrpcContentClient(contentUri);
     }
 
-
-
   }
-
 
   @Override
   public Result<String> createImage(String userId, byte[] imageContents, String password) {
     Log.info("createImage : user = " + userId + "; image = " + imageContents + "; pwd = " + password + "\n");
-
-    if(users != null) {
+    if (users != null) {
       Result<User> r = users.getUser(userId, password);
-
       if (!r.isOK())
         return Result.error(r.error());
     }
-
-
-
     try {
       String imageId = UUID.randomUUID().toString();
-      String filename = DIR + "/" + imageId;
+      File dir = new File(DIR + "/" + userId);
+      if (!dir.exists()) {
+        dir.mkdirs();
+      }
+      String filename = DIR + "/" + userId + "/" + imageId;
       Files.write(Paths.get(filename), imageContents);
-      return Result.ok("http://localhost:8082/rest/images/" + userId + "/" + imageId);
+      return Result
+          .ok("http://" + IP_ADRESS + ":8082/rest/image/" + userId + "/" + imageId);
     } catch (IOException e) {
       e.printStackTrace();
       return Result.error(ErrorCode.INTERNAL_ERROR);
@@ -86,18 +93,12 @@ public class JavaImage implements Image {
     if (userId == null || imageId == null) {
       return Result.error(ErrorCode.BAD_REQUEST);
     }
-    //Result<List<User>> r = users.searchUsers(userId);
-//    if (!r.isOK())
-//      return Result.error(r.error());
-//    if(r.value().isEmpty())
-//      return Result.error(ErrorCode.NOT_FOUND);
     try {
-      String filename = DIR + "/" + imageId;
-      Path imagePath = Paths.get(filename);
+      Path imagePath = Paths.get(DIR + "/" + userId + "/" + imageId);
+
       if (!Files.exists(imagePath)) {
         return Result.error(ErrorCode.NOT_FOUND);
       }
-
       byte[] content = Files.readAllBytes(imagePath);
       return Result.ok(content);
     } catch (IOException e) {
@@ -117,7 +118,6 @@ public class JavaImage implements Image {
 
     try {
       Path imagePath = Paths.get(filename);
-
       if (!Files.exists(imagePath)) {
         return Result.error(ErrorCode.NOT_FOUND);
       }

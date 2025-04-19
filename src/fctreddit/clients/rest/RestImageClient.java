@@ -70,7 +70,7 @@ public class RestImageClient extends ImagesClient {
   @Override
   public Result<Void> deleteImage(String userId, String imageId, String password) {
 
-    Response r = executeOperationDelete(target.path(userId).path(imageId).request());
+    Response r = executeOperationDelete(target.path(userId + "/" + imageId).request());
     if (r == null)
       return Result.error(ErrorCode.TIMEOUT);
 

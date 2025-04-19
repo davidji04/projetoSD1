@@ -25,7 +25,7 @@ public class ImagesServer {
   }
 
   public static final int PORT = 8082;
-  public static final String SERVICE = "Images"; // Changed from "Users" to "Images"
+  public static final String SERVICE = "Images";
   private static final String SERVER_URI_FMT = "http://%s:%s/rest";
 
   public static void main(String[] args) {
